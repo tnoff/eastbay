@@ -1,0 +1,9 @@
+# Django stuff
+secret_key
+*.sql
+*.sqlite
+*.sqlite3
+
+# Python stuff
+eastbay_massage/__pycache__/
+*.pyc

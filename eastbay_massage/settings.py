@@ -12,20 +12,31 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 from pathlib import Path
 
+class SetupException(Exception):
+  '''
+  Errors in settings.py setup and such
+  '''
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+SECRET_KEY_FILE = BASE_DIR / 'secret_key'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-xiek6@%#2%pvpt8-__1s)$j!&^m@emp!%&ul$g-fs$yxsfwj3='
+if not SECRET_KEY_FILE.exists():
+  raise SetupException('No secret key file')
+
+SECRET_KEY = SECRET_KEY_FILE.read_text()
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+  '*',
+]
 
 
 # Application definition
