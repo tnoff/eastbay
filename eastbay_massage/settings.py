@@ -9,7 +9,9 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
+import os
 
+import dj_database_url
 from pathlib import Path
 
 class SetupException(Exception):
@@ -20,23 +22,28 @@ class SetupException(Exception):
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-SECRET_KEY_FILE = BASE_DIR / 'secret_key'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-if not SECRET_KEY_FILE.exists():
-  raise SetupException('No secret key file')
+# Check first for env
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', None)
+if SECRET_KEY is None:
+    SECRET_KEY_FILE = BASE_DIR / 'secret_key'
+    if not SECRET_KEY_FILE.exists():
+        raise SetupException('No secret key file')
 
-SECRET_KEY = SECRET_KEY_FILE.read_text()
+    SECRET_KEY = SECRET_KEY_FILE.read_text()
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = 'RENDER' not in os.environ
 
-ALLOWED_HOSTS = [
-  '*',
-]
+ALLOWED_HOSTS = []
+
+RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
+if RENDER_EXTERNAL_HOSTNAME:
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 
 
 # Application definition

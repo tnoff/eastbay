@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: website
+    env: python
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn eastbay_massage.wsgi:application"
+      - key: SECRET_KEY
+        generateValue: true
+      - key: WEB_CONCURRENCY
+        value: 4  
