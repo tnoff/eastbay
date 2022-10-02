@@ -1,20 +1,22 @@
 {% extends "base.html" %}
 
 {% block content %}
-<style type="text/css">
-    #header{
-        padding-bottom: 15px;
-    }
-</style>
-
-<div id="header" align="center">
-    <h1>East Bay Massage and Lymph Drainage</h1>
-    <p>East Bay Massage and Lymph Drainage is a mobile massage practice that provides hands-on therapeutic massage aimed to:</p>
-    <ul>
-        <li>Reduce pain and inflammation</li>
-        <li>Improve range of motion </li>
-        <li>Increase ease and efficiency of movement</li>
-    </ul> 
-    <p>For appointments, please call 1-925-396-7458, or send an email to <a href = "mailto: trang@eastbaymassageandlymph.com">trang@eastbaymassageandlymph.com</a></p>
+<div align="center">
+    <div class="row">
+        <h1 id="header">East Bay Massage and Lymph Drainage</h1>
+        <div class="col">
+            <img src="/static/images/home.jpg" alt="Man receiving massage" width="80%" height="80%">
+        </div>
+        <div class="col">
+            <div class="container"></div>
+            <p>East Bay Massage and Lymph Drainage is a mobile massage practice that provides hands-on therapeutic massage aimed to:</p>
+            <ul>
+                <li>Reduce pain and inflammation</li>
+                <li>Improve range of motion </li>
+                <li>Increase ease and efficiency of movement</li>
+            </ul> 
+        </div>
+        <p>For appointments, please call 1-925-396-7458, or send an email to <a href = "mailto: trang@eastbaymassageandlymph.com">trang@eastbaymassageandlymph.com</a></p>
+    </div>
 </div>
 {% endblock %}
