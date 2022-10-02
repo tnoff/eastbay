@@ -17,8 +17,14 @@
 
     <!-- Custom CSS Styles -->
     <style type="text/css">
+        html {
+          position: relative;
+          min-height: 100%;
+        }
         body {
             background-color: #F5FAFA;
+            margin: 0 0 100px;
+            padding-bottom: 25px;
         }
         nav {
             background-color: #ACD1E9;
@@ -27,6 +33,14 @@
         #main-page {
             padding-left: 30px;
             padding-right: 30px;
+        }
+        footer {
+          position: absolute;
+          left: 0;
+          bottom: 0;
+          height: 100px;
+          width: 100%;
+          overflow: hidden;
         }
     </style>
 
@@ -59,4 +73,9 @@
       {% endblock %}
       </div>
     </body>
+    <div id="footer" align="center">
+      <footer>
+        <p>Last Updated 2022-10-02. LLC Number: 202252418368</p>
+      </footer>
+    </div>
 </html>
