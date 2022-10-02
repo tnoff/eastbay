@@ -24,4 +24,5 @@ urlpatterns = [
     path('services/', views.services, name='services'),
     path('about/', views.about, name='about'),
     path('contact/', views.contact, name='contact'),
+    path('fbf36ea0-b13f-445e-9082-f7d7cdeac8b6', views.voicemail, name='voicemail'),
 ]

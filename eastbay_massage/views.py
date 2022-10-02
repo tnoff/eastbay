@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from twilio.twiml.voice_response import Play, VoiceResponse
 
-from eastbay_massage.settings import CONTACT_EMAIL, CONTACT_NUMBER
+from eastbay_massage.settings import CONTACT_EMAIL, CONTACT_NUMBER, RENDER_EXTERNAL_HOSTNAME
 
 CONTACT_INFO = {
   'contact_email': CONTACT_EMAIL,
@@ -19,3 +20,9 @@ def about(request):
 
 def contact(request):
   return render(request, 'contact.html', CONTACT_INFO) 
+
+def voicemail(request):
+  response = VoiceResponse()
+  response.play(f'{RENDER_EXTERNAL_HOSTNAME}/static/audio/voicemail.mp3')
+
+  return HttpResponse(response, content_type='text/xml')

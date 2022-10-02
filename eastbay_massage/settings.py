@@ -47,6 +47,7 @@ if RENDER_EXTERNAL_HOSTNAME:
 CONTACT_EMAIL = os.environ.get('CONTACT_EMAIL', 'trang@eastbaymassageandlymph.com')
 CONTACT_NUMBER = os.environ.get('CONTACT_NUMBER', '(925) 248-4150')
 
+
 # Application definition
 
 INSTALLED_APPS = [
