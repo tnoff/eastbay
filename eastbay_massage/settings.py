@@ -57,7 +57,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.staticfiles.finders.FileSystemFinder',
     # https://django-bootstrap-v5.readthedocs.io/en/latest/index.html
     'bootstrap5',
 ]
