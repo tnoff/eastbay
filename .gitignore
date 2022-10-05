@@ -4,6 +4,9 @@ secret_key
 *.sqlite
 *.sqlite3
 
+# Static Admin
+static/admin
+
 # Python stuff
 eastbay_massage/__pycache__/
 *.pyc

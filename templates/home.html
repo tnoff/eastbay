@@ -1,11 +1,12 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block content %}
 <div align="center">
     <div class="row">
         <h1 id="header">East Bay Massage and Lymph Drainage</h1>
         <div class="col">
-            <img src="/static/images/home.jpg" alt="Man receiving massage" width="80%" height="80%">
+            <img src="{% static "images/home.jpg" %}" alt="Man receiving massage" width="80%" height="80%">
         </div>
         <div class="col">
             <div class="container"></div>
