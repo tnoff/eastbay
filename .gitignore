@@ -3,6 +3,7 @@ secret_key
 *.sql
 *.sqlite
 *.sqlite3
+website.log*
 
 # Static Admin
 static/admin
