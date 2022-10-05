@@ -118,8 +118,6 @@ else:
     }
 
 LOG_FILE = BASE_DIR / 'website.log'
-if 'RENDER' in os.environ:
-    LOG_FILE = '/var/log/website/website.log'
 
 LOGGING = {
     'version': 1,
