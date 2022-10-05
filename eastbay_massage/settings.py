@@ -117,7 +117,42 @@ else:
         }
     }
 
+LOG_FILE = BASE_DIR / 'website.log'
+if 'RENDER' in os.environ:
+    LOG_FILE = '/var/log/website/website.log'
 
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'default': {
+            'format': "[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s",
+            'datefmt': "%Y-%m-%d %H:%M:%S"
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'default'
+        },
+        'rotated_logs': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': LOG_FILE,
+            'maxBytes': 1024 * 1024 * 5,  # 5 MB
+            'backupCount': 5,
+            'formatter': 'default',
+            'level': 'DEBUG',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console', 'rotated_logs'],
+            'propagate': True,
+            'level': 'DEBUG',
+        },
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
