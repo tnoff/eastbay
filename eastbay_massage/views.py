@@ -23,6 +23,6 @@ def contact(request):
 
 def voicemail(request):
   response = VoiceResponse()
-  response.play(f'{RENDER_EXTERNAL_HOSTNAME}/static/audio/voicemail.mp3')
+  response.play(f'https://{RENDER_EXTERNAL_HOSTNAME}/static/audio/voicemail.mp3')
 
   return HttpResponse(response, content_type='text/xml')

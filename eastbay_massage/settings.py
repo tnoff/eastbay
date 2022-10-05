@@ -102,7 +102,7 @@ WSGI_APPLICATION = 'eastbay_massage.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-if 'render' in os.environ:
+if 'POSTGRES_DATABASE' in os.environ:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
