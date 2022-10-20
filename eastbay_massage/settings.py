@@ -54,6 +54,7 @@ CONTACT_NUMBER = os.environ.get('CONTACT_NUMBER', '(925) 248-4150')
 # Application definition
 
 INSTALLED_APPS = [
+    'whitenoise.runserver_nostatic',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -62,7 +63,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # https://django-bootstrap-v5.readthedocs.io/en/latest/index.html
     'bootstrap5',
-    'whitenoise.runserver_nostatic',
 ]
 
 MIDDLEWARE = [
