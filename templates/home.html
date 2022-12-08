@@ -14,7 +14,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <title>East Bay Massage and Lymph Node Treatment</title>
+        <title>East Bay Massage and Lymph Drainage</title>
     </head>
 
     <!-- Custom CSS Styles -->
@@ -28,9 +28,11 @@
             margin: 0 0 50px;
             padding-bottom: 25px;
         }
-
-        #main {
-            padding-top: 60px;
+        nav {
+            padding-bottom: 50px;
+        }
+        #header-image {
+            padding-top: 100px;
         }
         footer {
           position: absolute;
@@ -45,7 +47,7 @@
     <body>
         <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
             <div class="container-fluid">
-            <a class="navbar-brand" href="/">East Bay Massage and Lymph Node</a>
+            <a class="navbar-brand" href="/">East Bay Massage and Lymph Drainage</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -54,40 +56,23 @@
                 <li class="nav-item">
                     <a class="nav-link active" aria-current="page" href="/">Homepage</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="/services/">Services</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="/about/">About</a>
-                </li>
             </div>
         </nav>
-        <div id="main" align="center">
-            <h1>East Bay Massage and Lymph Node Treatment</h1>
-            <p>East Bay Massage and Lymph Drainage is a mobile massage practice that provides hands-on therapeutic massage.</p>
-            <!-- Three columns of text below the carousel -->
-            <div id="top-messages" class="row">
-                <div class="col-lg-4">    
-                    <h2>Reduce Pain and Inflammation</h2>
-                    <p>More information here about how we do that.</p>
-                    <p><a class="btn btn-secondary" href="#reduce">View details &raquo;</a></p>
+        <div align="center" id="header-image">
+            <img src="{% static 'images/header.png' %}" width="45%" height="45%">
+            <div class="row justify-content-center">
+                <div class="col-md-3">
+                    <p>Email: <a href = "mailto: {{contact_email}}">{{contact_email}}</a></p>
                 </div>
-                <div class="col-lg-4">    
-                    <h2>Improve Range of Motion</h2>
-                    <p>More information here about how we do that.</p>
-                    <p><a class="btn btn-secondary" href="#improve">View details &raquo;</a></p>
-                </div>
-                <div class="col-lg-4">    
-                    <h2>Increase Ease and Efficiency of Movement</h2>
-                    <p>More information here about how we do that.</p>
-                    <p><a class="btn btn-secondary" href="#increase">View details &raquo;</a></p>
+                <div class="col-md-3">
+                    <p>Phone: <a href="tel:+1{{contact_number_no_space}}">{{contact_number}}</a></p>
                 </div>
             </div>
             <hr class="featurette-divider">
             <div id="reduce" class="row featurette">
                 <div class="col-md-5">
-                  <h2 class="featurette-heading">Reduce Pain and Inflammatio</h2>
-                  <p class="lead">More information here about how we do that.</p>
+                    <h2 class="featurette-heading">Reduce Pain and Inflammation</h2>
+                    <p class="lead">More information here about how we do that.</p>
                 </div>
                 <div class="col-md-7">
                     <img src="{% static 'images/reduce.png' %}" width="75%" height="75%">          
@@ -96,26 +81,16 @@
             <hr class="featurette-divider">
             <div id="improve" class="row featurette">
                 <div class="col-md-5">
-                  <h2 class="featurette-heading">Improve Range of Motion</h2>
-                  <p class="lead">More information here about how we do that.</p>
+                    <h2 class="featurette-heading">Improve Range of Motion</h2>
+                    <p class="lead">More information here about how we do that.</p>
                 </div>
                 <div class="col-md-7">
                     <img src="{% static 'images/range.png' %}" width="75%" height="75%">          
                 </div>
             </div>
-            <hr class="featurette-divider">
-            <div id="increase" class="row featurette">
-                <div class="col-md-5">
-                  <h2 class="featurette-heading">Increase Ease and Efficiency of Movement</h2>
-                  <p class="lead">More information here about how we do that.</p>
-                </div>
-                <div class="col-md-7">
-                    <img src="{% static 'images/incease.png' %}" width="75%" height="75%">          
-                </div>
-            </div>
         </div>
         <footer>
-            <p>Last Updated 2022-10-02. LLC Number: 202252418368</p>
+            <p align="center">Last Updated 2022-12-07. LLC Number: 202252418368</p>
         </footer>
     </body>
 </html>
