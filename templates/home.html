@@ -34,6 +34,13 @@
         #header-image {
             padding-top: 100px;
         }
+        #contact-form {
+            padding-left: 50px;
+            padding-right: 50px;
+        }
+        #submit-button {
+            padding-top: 5px;
+        }
         footer {
           position: absolute;
           left: 0;
@@ -41,6 +48,7 @@
           height: 100px;
           width: 100%;
           overflow: hidden;
+          padding-top: 50px;
         }
     </style>
 
@@ -80,14 +88,29 @@
             </div>
             <hr class="featurette-divider">
             <div id="improve" class="row featurette">
+                <div class="col-md-7">
+                    <img src="{% static 'images/range.png' %}" width="75%" height="75%">          
+                </div>
                 <div class="col-md-5">
                     <h2 class="featurette-heading">Improve Range of Motion</h2>
                     <p class="lead">More information here about how we do that.</p>
                 </div>
-                <div class="col-md-7">
-                    <img src="{% static 'images/range.png' %}" width="75%" height="75%">          
-                </div>
             </div>
+        </div>
+        <hr class="featurette-divider">
+        <div align="center" id="contact-form">
+            <h1>Schedule an Appointment</h1>
+            <form>
+                <div class="form-group">
+                  <label for="email">Your Email address</label>
+                  <input type="email" class="form-control" id="email" placeholder="name@example.com">
+                </div>
+                <div class="form-group">
+                  <label for="message">Type your message here</label>
+                  <textarea class="form-control" id="message" rows="3"></textarea>
+                </div>
+                <button id="submit-button" type="submit" class="btn btn-primary">Submit</button>
+              </form>
         </div>
         <footer>
             <p align="center">Last Updated 2022-12-07. LLC Number: 202252418368</p>
