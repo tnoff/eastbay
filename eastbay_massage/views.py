@@ -12,3 +12,6 @@ CONTACT_INFO = {
 
 def home(request):
   return render(request, 'home.html', CONTACT_INFO)
+
+def about(request):
+  return render(request, 'about.html', CONTACT_INFO)
