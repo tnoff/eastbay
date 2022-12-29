@@ -51,6 +51,16 @@ CONTACT_EMAIL = os.environ.get('CONTACT_EMAIL', 'trang@eastbaymassageandlymph.co
 CONTACT_NUMBER = os.environ.get('CONTACT_NUMBER', '(925) 248-4150')
 
 
+EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp.gmail.com')
+EMAIL_PORT = os.environ.get('EMAIL_PORT', 587)
+
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'eastbaymassageandlymph@gmail.com')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', None)
+
+EMAIL_ENABLED = False
+if EMAIL_HOST_PASSWORD:
+    EMAIL_ENABLED = True
+
 # Application definition
 
 INSTALLED_APPS = [

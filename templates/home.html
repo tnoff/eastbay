@@ -51,6 +51,9 @@
 {% if errors %}
 {{ errors }}
 {% endif %}
+{% if success is True %}
+<p>Email successfully sent.</p>
+{% endif %}
 <div align="center" id="contact-form">
     <h1>Schedule an Appointment</h1>
     <form method="post" action="/send_message/">

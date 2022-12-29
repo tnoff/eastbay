@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{# Load the tag library #}
+{% load bootstrap5 %}
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+{% load static %}
+
+{# Display django.contrib.messages as Bootstrap alerts #}
+{% bootstrap_messages %}
+
+{% block content %}
+<div align="center" id="message">
+<h1>Message Successfully Sent</h1>
+<h1><a href="/">Click Here To Go Back to Main Page</a></h1>
+</div>
+{% endblock content %}
