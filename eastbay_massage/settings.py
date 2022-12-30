@@ -48,7 +48,7 @@ else:
     ALLOWED_HOSTS.append('localhost')
 
 CONTACT_EMAIL = os.environ.get('CONTACT_EMAIL', 'trang@eastbaymassageandlymph.com')
-CONTACT_NUMBER = os.environ.get('CONTACT_NUMBER', '(925) 248-4150')
+CONTACT_NUMBER = os.environ.get('CONTACT_NUMBER', '(925) 570-7495')
 
 
 EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp.gmail.com')
