@@ -23,11 +23,11 @@ EMAIL_REGEX = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
 def home(request):
   return render(request, 'home.html', CONTACT_INFO)
 
+def about(request):
+  return render(request, 'about.html', CONTACT_INFO)
+
 def services(request):
   return render(request, 'services.html', CONTACT_INFO)
-
-def prices(request):
-  return render(request, 'prices.html', CONTACT_INFO)
 
 def message_successful(request):
   return render(request, 'message.html', CONTACT_INFO)
