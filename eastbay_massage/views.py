@@ -26,8 +26,8 @@ def home(request):
 def about(request):
   return render(request, 'about.html', CONTACT_INFO)
 
-def services(request):
-  return render(request, 'services.html', CONTACT_INFO)
+def prices(request):
+  return render(request, 'prices.html', CONTACT_INFO)
 
 def message_successful(request):
   return render(request, 'message.html', CONTACT_INFO)
