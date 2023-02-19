@@ -9,7 +9,7 @@ from django.http import HttpResponse
 from twilio.twiml.voice_response import Play, VoiceResponse
 
 from eastbay_massage.settings import CONTACT_EMAIL, CONTACT_NUMBER
-from eastbay_massage.settings import EMAIL_ENABLED, EMAIL_HOST_USER
+from eastbay_massage.settings import EMAIL_ENABLED, EMAIL_HOST_USER, EMAIL_HOST_PASSWORD
 from eastbay_massage.forms import EmailForm
 
 CONTACT_INFO = {
@@ -41,11 +41,13 @@ def send_message(request):
         cd = form.cleaned_data
         if EMAIL_ENABLED:
           send_mail(
-            f'Web Form Message {datetime.now()}',
-            f'From: {data.get("email")}\nMessage: {data.get("message")}',
-            EMAIL_HOST_USER,
-            [CONTACT_EMAIL],
-            fail_silently=False,
+            subject = f'Web Form Message {datetime.now()}',
+            message = f'From: {cd.get("email")}\nMessage: {cd.get("message")}',
+            from_email = EMAIL_HOST_USER,
+            recipient_list = [CONTACT_EMAIL,],
+            auth_user = EMAIL_HOST_USER,
+            auth_password = EMAIL_HOST_PASSWORD,
+            fail_silently = False,
           )
         else:
           print('data', cd)
