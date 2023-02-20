@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{# Load the tag library #}
+{% load bootstrap5 %}
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+{% load static %}
+
+{# Display django.contrib.messages as Bootstrap alerts #}
+{% bootstrap_messages %}
+
+{% block content %}
+<div align="center">
+        <h2>Policies</h2>
+        <p>Assessment: Before the first visit, a free in-home assessment is required to ensure the massage session will be safe for both practitioner and client. Please allow 30-60 minutes to complete and go over an intake form.</p>
+        <p>Cancellations/ rescheduling: If you are not feeling well or need to postpone your appointment, please call or text <a href="tel:+1{{contact_number_no_space}}">{{contact_number}}</a> or email <a href = "mailto: {{contact_email}}">{{contact_email}}</a>.</p>
+        <p>Payment: Due at time of service. Cash, Venmo, Zelle, credit/debit card, checks (must present ID)</p>
+        <p>Referrals: For each person you refer who books an appointment, you will receive $25 off your next session.</p>
+</div>
+{% include "contact.html" %}
+{% endblock content %}

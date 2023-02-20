@@ -29,6 +29,9 @@ def about(request):
 def prices(request):
   return render(request, 'prices.html', CONTACT_INFO)
 
+def policies(request):
+  return render(request, 'policies.html', CONTACT_INFO)
+
 def message_successful(request):
   return render(request, 'message.html', CONTACT_INFO)
 
