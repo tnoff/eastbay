@@ -48,7 +48,7 @@ else:
     ALLOWED_HOSTS.append('localhost')
 
 CONTACT_EMAIL = os.environ.get('CONTACT_EMAIL', 'trang@eastbaymassageandlymph.com')
-CONTACT_NUMBER = os.environ.get('CONTACT_NUMBER', '(925) 570-7495')
+CONTACT_NUMBER = os.environ.get('CONTACT_NUMBER', '(925) 230-7757')
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True
