@@ -7,7 +7,13 @@
 
 {# Display django.contrib.messages as Bootstrap alerts #}
 {% bootstrap_messages %}
-
+<hr class="featurette-divider">
+{% if errors %}
+{{ errors }}
+{% endif %}
+{% if success is True %}
+<p>Email successfully sent.</p>
+{% endif %}
 <div align="center" id="contact-form" class="row justify-content-center">
     <div class="col-md-5">
       <h1>Contact</h1>
