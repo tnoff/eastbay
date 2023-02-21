@@ -39,10 +39,13 @@ if SECRET_KEY is None:
 DEBUG_SETTING = os.environ.get('DJANGO_DEBUG', 'false')
 DEBUG = DEBUG_SETTING == 'true'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'eastbaymassageandlymph.com',
+    '.eastbaymassageandlymph.com',
+]
 
 RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
-if RENDER_EXTERNAL_HOSTNAME:
+if RENDER_EXTERNAL_HOSTNAME and RENDER_EXTERNAL_HOSTNAME not in ALLOWED_HOSTS:
     ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 else:
     ALLOWED_HOSTS.append('localhost')
