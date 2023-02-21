@@ -41,12 +41,9 @@ DEBUG = DEBUG_SETTING == 'true'
 
 ALLOWED_HOSTS = []
 
-RENDER_EXTERNAL_HOSTNAMES = os.environ.get('RENDER_EXTERNAL_HOSTNAMES')
-if RENDER_EXTERNAL_HOSTNAMES:
-    for host in RENDER_EXTERNAL_HOSTNAMES.split(','):
-        if not host:
-            continue
-        ALLOWED_HOSTS.append(host)
+RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
+if RENDER_EXTERNAL_HOSTNAME:
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 else:
     ALLOWED_HOSTS.append('localhost')
 
