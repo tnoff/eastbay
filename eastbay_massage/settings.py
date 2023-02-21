@@ -36,7 +36,8 @@ if SECRET_KEY is None:
     SECRET_KEY = SECRET_KEY_FILE.read_text()
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG_SETTING = os.environ.get('DJANGO_DEBUG', 'false')
+DEBUG = DEBUG_SETTING == 'true'
 
 
 ALLOWED_HOSTS = []
