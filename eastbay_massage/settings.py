@@ -36,18 +36,15 @@ if SECRET_KEY is None:
     SECRET_KEY = SECRET_KEY_FILE.read_text()
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG_SETTING = os.environ.get('DJANGO_DEBUG', 'false')
-DEBUG = DEBUG_SETTING == 'true'
+DEBUG = False
 
 ALLOWED_HOSTS = [
     'eastbaymassageandlymph.com',
     '.eastbaymassageandlymph.com',
 ]
 
-RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
-if RENDER_EXTERNAL_HOSTNAME and RENDER_EXTERNAL_HOSTNAME not in ALLOWED_HOSTS:
-    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
-else:
+if SECRET_KEY_FILE.exists():
+    DEBUG = True
     ALLOWED_HOSTS.append('localhost')
 
 CONTACT_EMAIL = os.environ.get('CONTACT_EMAIL', 'trang@eastbaymassageandlymph.com')
@@ -135,7 +132,10 @@ else:
         }
     }
 
-LOG_FILE = BASE_DIR / 'website.log'
+LOG_FILE = '/var/log/easbaymassage/eastbaymassage.log'
+
+if SECRET_KEY_FILE.exists():
+    LOG_FILE = BASE_DIR / 'website.log'
 
 LOGGING = {
     'version': 1,
