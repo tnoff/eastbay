@@ -27,9 +27,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 # Check first for env
+SECRET_KEY_FILE = BASE_DIR / 'secret_key'
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', None)
 if SECRET_KEY is None:
-    SECRET_KEY_FILE = BASE_DIR / 'secret_key'
     if not SECRET_KEY_FILE.exists():
         raise SetupException('No secret key file')
 
@@ -132,7 +132,7 @@ else:
         }
     }
 
-LOG_FILE = '/var/log/easbaymassage/eastbaymassage.log'
+LOG_FILE = '/var/log/eastbaymassage/eastbaymassage.log'
 
 if SECRET_KEY_FILE.exists():
     LOG_FILE = BASE_DIR / 'website.log'
