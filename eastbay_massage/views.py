@@ -6,7 +6,6 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.core.mail import send_mail
 from django.http import HttpResponse
-from twilio.twiml.voice_response import Play, VoiceResponse
 
 from eastbay_massage.settings import CONTACT_EMAIL, CONTACT_NUMBER
 from eastbay_massage.settings import EMAIL_ENABLED, EMAIL_HOST_USER, EMAIL_HOST_PASSWORD
@@ -18,22 +17,13 @@ CONTACT_INFO = {
   'contact_number_no_space': CONTACT_NUMBER.replace('-', '').replace('(', '').replace(')', '').replace(' ', '')
 }
 
-EMAIL_REGEX = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
-
 def home(request):
-  return render(request, 'home.html', CONTACT_INFO)
-
-def about(request):
-  return render(request, 'about.html', CONTACT_INFO)
-
-def prices(request):
-  return render(request, 'prices.html', CONTACT_INFO)
-
-def policies(request):
-  return render(request, 'policies.html', CONTACT_INFO)
+  data = deepcopy(CONTACT_INFO)
+  data['show_contact'] = True
+  return render(request, 'home.html', data)
 
 def message_successful(request):
-  return render(request, 'message.html', CONTACT_INFO)
+  return render(request, 'message.html')
 
 def send_message(request):
   form = EmailForm()
@@ -42,10 +32,12 @@ def send_message(request):
     form = EmailForm(request.POST)
     if form.is_valid():
         cd = form.cleaned_data
+        # Clean phone number
+        cd['phone_number'] = str(cd['phone_number'])
         if EMAIL_ENABLED:
           send_mail(
             subject = f'Web Form Message {datetime.now()}',
-            message = f'From: {cd.get("email")}\nMessage: {cd.get("message")}',
+            message = f'From: {cd.get("email")}\nName: {cd.get("name")}\nPhone Number: {cd.get("phone_number")}\nMessage: {cd.get("message")}',
             from_email = EMAIL_HOST_USER,
             recipient_list = [CONTACT_EMAIL,],
             auth_user = EMAIL_HOST_USER,
@@ -56,5 +48,6 @@ def send_message(request):
           print('data', cd)
         return HttpResponseRedirect('/message_successful/')
     else:
-      return_data['errors'] = form.errors
+      return_data['form'] = form
+  return_data['show_contact'] = True
   return render(request, 'home.html', return_data)

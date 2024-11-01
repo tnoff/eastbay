@@ -1,76 +1,228 @@
-{% extends "base.html" %}
-{# Load the tag library #}
-{% load bootstrap5 %}
-{# Load CSS and JavaScript #}
+{% extends  "base.html" %}
+{% load django_bootstrap5 %}
 {% bootstrap_css %}
 {% bootstrap_javascript %}
+{% load bootstrap_icons %}
 {% load static %}
 
-{# Display django.contrib.messages as Bootstrap alerts #}
-{% bootstrap_messages %}
-
 {% block content %}
-<div align="center" id="header-image">
-    <div class="row justify-content-center">
-        <div class="col-md-7">
-            <img src="{% static 'images/header.png' %}" width="100%" height="85%">
+<div class="container" id="info">
+    <div id="info" class="row align-items-center row-eq-height">
+        <div class="col-6">
+            <img class="rounded"  src="{% static 'images/header.jpg' %}" width="100%" height="100%">
         </div>
-    </div>
-    <div class="row justify-content-center">
-        <div class="col-md-3">
-            <p>Email: <a href = "mailto: {{contact_email}}">{{contact_email}}</a></p>
-        </div>
-        <div class="col-md-3">
-            <p>Phone: <a href="tel:+1{{contact_number_no_space}}">{{contact_number}}</a></p>
-        </div>
-    </div>
-</div>
-<div>
-    <hr class="featurette-divider">
-    <div id="reduce" class="row featurette">
-        <div class="col-md-6">
-            <h2 class="featurette-heading" align="center">About</h2>
-            <p class="lead" align="center">East Bay Massage and Lymph Drainage is an in-home clinical massage service dedicated to providing quality therapeutic massage and manual lymphatic drainage. Natural, hands-on techniques are used to reduce tension and pain, decrease inflammation, relieve stress and improve circulation to achieve greater ease of movement with increased range of motion and improved posture. Each session is tailored to meet the client’s specific preferences and goals.</p>
-            <div align="center">
-                <a href="/about/">
-                    <button id="submit-button" type="submit" class="btn btn-primary">Read More</button>
-                </a>
+        <div align="center" class="col-6">
+            <div class="row">
+                <h3>Contact Information</h3>
+            </div>
+            <div class="row">
+                <p>Email: <a href = "mailto: {{contact_email}}">{{contact_email}}</a></p>
+            </div>
+            <div class="row">
+                <p>Phone: <a href="tel:+1{{contact_number_no_space}}">{{contact_number}}</a></p>
             </div>
         </div>
-        <div class="col-md-6" align="center">
-            <img src="{% static 'images/sunset.png' %}" width="85%" height="85%">          
-        </div>
     </div>
     <hr class="featurette-divider">
-    <div id="improve" class="row featurette">
-        <div class="col-md-6" align="center">
-            <img src="{% static 'images/pink-white-flower.png' %}" width="85%" height="85%">          
-        </div>
-        <div class="col-md-6">
+    <div id="about-section" class="rowalign-items-center row-eq-height featurette">
+        <h2 class="featurette-heading" align="center">Who We Are</h2>
+        <p class="lead" align="center">East Bay Massage and Lymph Drainage is an in-home clinical massage service dedicated to providing quality therapeutic massage and manual lymphatic drainage. Natural, hands-on techniques are used to reduce tension and pain, decrease inflammation, relieve stress and improve circulation to achieve greater ease of movement with increased range of motion and improved posture. Each session is tailored to meet the client’s specific preferences and goals.</p>
+    </div>
+    <hr class="featurette-divider">
+    <div class="row home-button">
+        <a onclick="updateButtonText('button-services', 'Services')" id="button-services" class="btn-lg btn btn-secondary" data-bs-toggle="collapse" href="#services" role="button" aria-expanded="false" aria-controls="services">Services {% bs_icon 'arrow-down' %}</a>
+    </div>
+    <div class="row collapse" id="services">
+        <div class="row featurette">
             <h2 class="featurette-heading" align="center">Therapeutic Massage</h2>
             <p class="lead" align="center">Therapeutic massage is used to improve circulation, increase flexibility and treat muscle pain, injury and stiffness. Deep tissue, trigger point therapy and myofascial release techniques are utilized in a therapeutic massage session. Deep tissue involves slow, deep strokes that break up adhesions within the muscle tissue and allow for less-restrictive movement of the muscle. Trigger points are tense nodules within the muscle that are painful when touched and cause pain, numbness, tingling, or headaches to other parts of the body. Trigger point therapy releases these areas of tension with sustained pressure on these points. Fascia is the connective tissue that surrounds everything within your body- muscles, bones, nerves, organs and more. Fascia can harden and get stiff through overuse, stress, inactivity, or trauma. Myofascia release works to soften areas of hardened fascia to bring greater ease of movement and muscular balance.</p>
         </div>
-    </div>
-    <hr class="featurette-divider">
-    <div id="reduce" class="row featurette">
-        <div class="col-md-6">
+        <div class="row featurette">
+            <hr class="featurette-divider">
             <h2 class="featurette-heading" align="center">Lymphatic Drainage </h2>
             <p class="lead" align="center">Lymph stagnation and congestion results from injury, surgery, stress, diet, inactivity, auto-immune issues and age. Gentle, rhythmic hand movements activate lymph circulation which accelerate the body’s ability to absorb nutrients and remove waste and toxins. Lymphatic drainage increases blood circulation and stimulates the immune system. In addition, the body’s rest-and-digest response is stimulated, promoting relaxation and restoration. This technique is used to reduce swelling and inflammation, relieve pain and improve mobility.</p>
         </div>
-        <div class="col-md-6" align="center">
-            <img src="{% static 'images/pink-yellow-flower.png' %}" width="85%" height="85%">          
-        </div>
-    </div>
-    <hr class="featurette-divider">
-    <div id="improve" class="row featurette">
-        <div class="col-md-6" align="center">
-            <img src="{% static 'images/purple-flower.png' %}" width="85%" height="85%">          
-        </div>
-        <div class="col-md-6">
+        <div class="ow featurette">
+            <hr class="featurette-divider">
             <h2 class="featurette-heading" align="center">Oncology Massage</h2>
             <p class="lead" align="center">Oncology massage therapy is a massage session that is adjusted for the needs of a client with cancer or with a history of cancer in order to strengthen the immune system, reduce stress and manage the side effects of treatment. Massage is a complement to the treatments and is implemented as a way of making the treatment process easier to tolerate by reducing nausea, fatigue, pain, insomnia and anxiety.</p>
         </div>
     </div>
+    <hr class="featurette-divider">
+    <div class="row home-button">
+        <a onclick="updateButtonText('button-prices', 'Prices')" id="button-prices" class="btn-lg btn btn-secondary" data-bs-toggle="collapse" href="#prices" role="button" aria-expanded="false" aria-controls="prices">Prices {% bs_icon 'arrow-down' %}</a>
+    </div>
+    <div class="row collapse" id="prices">
+        <h2 align="center">Massage</h2>
+        <div class="col-4"></div>
+        <div class="col-4">
+            <table align="center" class="table">
+                <thead>
+                <tr>
+                    <th scope="col" class="table-left">Session Length</th>
+                    <th scope="col" class="table-right">Price</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <th scope="row" class="table-left">60 minutes (1 hour)</th>
+                    <td class="table-right">$140</td>
+                </tr>
+                <tr>
+                    <th scope="row" class="table-left">90 minutes</th>
+                    <td class="table-right">$190</td>
+                </tr>
+                <tr>
+                    <th scope="row" class="table-left">120 minutes (2 hours)</th>
+                    <td class="table-right">$245</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-4"></div>
+        <h3 align="center">Discounts</h3>
+        <p align="center">Seniors sixty-five years and older receive $15 off any service.</p>
+    </div>
+    <hr class="featurette-divider">
+    <div class="row home-button">
+        <a onclick="updateButtonText('button-policies', 'Policies')" id="button-policies" class="btn-lg btn btn-secondary" data-bs-toggle="collapse" href="#policies" role="button" aria-expanded="false" aria-controls="policies">Policies {% bs_icon 'arrow-down' %}</a>
+    </div>
+    <div class="row collapse" id="policies">
+        <h2 align="center">Policies</h2>
+        <div align="center">
+            <p><b>Cancellations/Rescheduling:</b> If you are not feeling well or need to postpone your appointment, please call or text <a href="tel:+1{{contact_number_no_space}}">{{contact_number}}</a> or email <a href = "mailto: {{contact_email}}">{{contact_email}}</a>.</p>
+            <p><b>Payment:</b> Due at time of service. Cash, Venmo, Zelle, credit/debit card, checks (must present ID)</p>
+        </div>
+    </div>
+    <hr class="featurette-divider">
+    <div class="row home-button">
+        <a onclick="updateButtonText('button-about', 'About')" id="button-about"  class="btn-lg btn btn-secondary" data-bs-toggle="collapse" href="#about" role="button" aria-expanded="false" aria-controls="about">About {% bs_icon 'arrow-down' %}</a>
+    </div>
+    <div class="row collapse" id="about">
+        <div id="info" class="row align-items-center row-eq-height">
+            <div class="col-3">
+                <div class="row">
+                    <img class="rounded" src="{% static 'images/headshot.jpg' %}" width="25%" height="25%" alt="Photo of Trang Phan">
+                </div>
+                <div align="center" class="row">
+                    <p>Trang Phan CMT</p>
+                    <p>Preferred Practitioner, Society for Oncology Massage</p>
+                </div>
+            </div>
+            <div class="col">
+                <p class="lead">Trang is a certified massage therapist and health care provider that strives to help those in her community achieve greater comfort and wellbeing.</p>
+                <p class="lead">She grew up in Dublin, CA and studied at CSU East Bay, where she earned a Bachelor of Science Degree in Physiology, before training at School of Holistic Touch.</p>
+                <p class="lead">She has a comprehensive knowledge in the anatomy and functions of the human body. Since receiving her certificate, Trang has been working in clinical massage settings and volunteering at Charlotte Maxwell Clinic, a non-profit organization that provides integrative care to women of low income affected by cancer.</p>
+                <p class="lead">Trang is continuously learning and developing her craft so she may better serve her community.</p>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-2"></div>
+            <div class="col-8">
+                <div align="left">
+                    <hr class="featurette-divider">
+                    <h2 class="featurette-heading" align="center">Education</h2>
+                    <ul>
+                        <li><b>Bachelor of Science, Physiology</b>: CSU East Bay</li>
+                        <li><b>Certified Massage Therapist</b>: School of Holistic Touch</li>
+                        <li><b>Lymph Drainage Therapy</b>: Chikly Institute of Health</li>
+                        <li><b>Oncology Massage Therapy</b>: UCSF Osher Center for Integrative Health</li>
+                        <li><b>Massage Therapy for People Living with Neurological Challenges</b>: UCSF Osher Center for Integrative Health</li>
+                        <li><b>Myofascial Release</b>: John F. Barnes' Myofascial Release</li>
+                        <li><b>Craniosacral Therapy</b>: Upledger Institute</li>
+                        <li><b>Corrective Exercise Specialist</b>: National Academy of Sports Medicine</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-2"></div>
+        </div>
+    </div>
+    <hr class="featurette-divider">
+    <div class="row home-button">
+        <a onclick="updateButtonText('button-contact', 'Contact')" id="button-contact"  class="btn-lg btn btn-secondary" data-bs-toggle="collapse" href="#contact" role="button" aria-expanded="false" aria-controls="about">Contact {% bs_icon 'arrow-down' %}</a>
+    </div>
+    {% if show_contact %}
+    <div class="row show" id="contact-foo">
+    {% else %}
+    <div class="row collapse" id="contact">
+    {% endif %}
+        <h3 align="center">Contact Form</h3>
+        {% if form.errors %}
+        {% for field in form %}
+            {% for error in field.errors %}
+                <div class="alert alert-danger">
+                    <strong>{{ error|escape }}</strong>
+                </div>
+            {% endfor %}
+        {% endfor %}
+        {% for error in form.non_field_errors %}
+            <div class="alert alert-danger">
+                <strong>{{ error|escape }}</strong>
+            </div>
+        {% endfor %}
+        {% endif %}
+        <form method="post" action="/send_message/">
+            {% csrf_token %}
+
+            <div class="row label-row">
+                <div class="col-3"></div>
+                <div class="col-1" align="right">
+                    <label for="name" class="col-form-label">Name</label>
+                </div>
+                <div class="col-4">
+                    {% if form.cleaned_data.name %}
+                    <input type="text" id="name" name="name" class="form-control" aria-describedby="Your Name" maxlength="1024" value="{{form.cleaned_data.name}}" required>
+                    {% else %}
+                    <input type="text" id="name" name="name" class="form-control" aria-describedby="Your Name" maxlength="1024" required>
+                    {% endif %}
+                </div>
+                <div class="col-4"></div>
+            </div>
+            <div class="row label-row">
+                <div class="col-3"></div>
+                <div class="col-1" align="right">
+                    <label for="email" class="col-form-label">Email</label>
+                </div>
+                <div class="col-4">
+                    {% if form.cleaned_data.email %}
+                    <input type="text" id="email" name="email" class="form-control" aria-describedby="name@example.com" maxlength="1024" value="{{ form.cleaned_data.email }}" required>
+                    {% else %}
+                    <input type="text" id="email" name="email" class="form-control" aria-describedby="name@example.com" maxlength="1024" required>
+                    {% endif %}
+                </div>
+                <div class="col-4"></div>
+            </div>
+            <div class="row label-row">
+                <div class="col-2"></div>
+                <div class="col-2" align="right">
+                    <label for="phone_number" class="col-form-label">Phone Number</label>
+                </div>
+                <div class="col-4">
+                    <input type="tel" id="phone_number" name="phone_number" placeholder="Not required" class="form-control" aria-describedby="555-123-456">
+                </div>
+                <div class="col-4"></div>
+            </div>
+            <div class="row label-row">
+                <div class="col-4" align="right">
+                    <label for="message" class="col-form-label">Additional Information</label>
+                </div>
+                <div class="col-4">
+                    {% if form.cleaned_data.message %}
+                    <textarea rows="3" id="message" name="message" class="form-control"  value="{{ form.cleaned_data.message }}" maxlength="30720" required>{{ form.cleaned_data.message }}</textarea>
+                    {% else %}
+                    <textarea rows="3" id="message" name="message" class="form-control"  maxlength="30720" required></textarea>
+                    {% endif %}
+                </div>
+                <div class="col-4"></div>
+            </div>
+            <div class="row" id="submit-row">
+                <div class="col-4"></div>
+                <div class="col-4" align="center">
+                    <button id="submit-button" type="submit" class="btn btn-primary">Submit</button>
+                </div>
+                <div class="col-4"></div>
+            </div>
+        </form>
+    </div>
 </div>
-{% include "contact.html" %}
 {% endblock content %}

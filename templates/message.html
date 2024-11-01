@@ -1,13 +1,10 @@
 {% extends "base.html" %}
-{# Load the tag library #}
-{% load bootstrap5 %}
-{# Load CSS and JavaScript #}
+
+{% load django_bootstrap5 %}
 {% bootstrap_css %}
 {% bootstrap_javascript %}
+{% load bootstrap_icons %}
 {% load static %}
-
-{# Display django.contrib.messages as Bootstrap alerts #}
-{% bootstrap_messages %}
 
 {% block content %}
 <div align="center" id="message">

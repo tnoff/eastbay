@@ -58,6 +58,8 @@ EMAIL_PORT = os.environ.get('EMAIL_PORT', 587)
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'eastbaymassageandlymph@gmail.com')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', None)
 
+PHONENUMBER_DEFAULT_REGION = 'US'
+
 EMAIL_ENABLED = False
 if EMAIL_HOST_PASSWORD:
     EMAIL_ENABLED = True
@@ -65,20 +67,21 @@ if EMAIL_HOST_PASSWORD:
 # Application definition
 
 INSTALLED_APPS = [
-    'whitenoise.runserver_nostatic',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # https://django-bootstrap-v5.readthedocs.io/en/latest/index.html
-    'bootstrap5',
+    # Boostrap
+    'django_bootstrap5',
+    'django_bootstrap_icons',
+    # Other apps
+    'phonenumber_field',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -170,7 +173,7 @@ LOGGING = {
     }
 }
 
-# Password validation
+# Password validationhttps://groups.google.com/a/eastbaydsa.org/g/meetings/settings?pli=1
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -206,7 +209,9 @@ USE_TZ = True
 
 
 STATIC_URL = 'static/'
-STATIC_ROOT = BASE_DIR / 'static'
+STATICFILES_DIRS = [
+    BASE_DIR / 'static'
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
