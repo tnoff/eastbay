@@ -19,7 +19,7 @@ CONTACT_INFO = {
 
 def home(request):
   data = deepcopy(CONTACT_INFO)
-  data['show_contact'] = True
+  data['show_contact'] = False
   return render(request, 'home.html', data)
 
 def message_successful(request):

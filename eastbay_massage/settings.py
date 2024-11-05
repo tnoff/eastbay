@@ -40,10 +40,12 @@ DEBUG = False
 
 ALLOWED_HOSTS = [
     'eastbaymassageandlymph.com',
-    '.eastbaymassageandlymph.com',
 ]
 
-if SECRET_KEY_FILE.exists():
+DOCKER_DEBUG = os.environ.get('DOCKER_DEBUG', False)
+DOCKER_DEPLOY = os.environ.get('DOCKER_DEPLOY', False)
+
+if SECRET_KEY_FILE.exists() or DOCKER_DEBUG:
     DEBUG = True
     ALLOWED_HOSTS.append('localhost')
 
@@ -116,14 +118,14 @@ WSGI_APPLICATION = 'eastbay_massage.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-if 'POSTGRES_DATABASE' in os.environ:
+if 'PG_DB' in os.environ:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
-            'NAME': os.environ['POSTGRES_DATABASE'],
-            'USER': os.environ['POSTGRES_USER'],
-            'PASSWORD': os.environ['POSTGRES_PASSWORD'],
-            'HOST': os.environ['POSTGRES_HOST'],
+            'NAME': os.environ['PG_DB'],
+            'USER': os.environ['PG_USER'],
+            'PASSWORD': os.environ['PG_PASSWORD'],
+            'HOST': os.environ['PG_HOST'],
             'PORT': '5432',
         }
     }
@@ -135,7 +137,7 @@ else:
         }
     }
 
-LOG_FILE = '/var/log/eastbaymassage/eastbaymassage.log'
+LOG_FILE = '/var/log/website/website.log'
 
 if SECRET_KEY_FILE.exists():
     LOG_FILE = BASE_DIR / 'website.log'
@@ -209,9 +211,12 @@ USE_TZ = True
 
 
 STATIC_URL = 'static/'
-STATICFILES_DIRS = [
-    BASE_DIR / 'static'
-]
+if DOCKER_DEPLOY:
+    STATIC_ROOT = BASE_DIR / 'static'
+else:
+    STATICFILES_DIRS = [
+        BASE_DIR / 'static'
+    ]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
