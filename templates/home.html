@@ -163,7 +163,6 @@
         {% endif %}
         <form method="post" action="/send_message/">
             {% csrf_token %}
-
             <div class="row label-row">
                 {% if form.cleaned_data.name %}
                 <input type="text" id="name" name="name" class="form-control" aria-describedby="Your Name" maxlength="1024" value="{{form.cleaned_data.name}}" required>
