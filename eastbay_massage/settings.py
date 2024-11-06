@@ -42,13 +42,9 @@ ALLOWED_HOSTS = [
     'eastbaymassageandlymph.com',
 ]
 
-DOCKER_DEBUG = os.environ.get('DOCKER_DEBUG', False)
-DOCKER_DEPLOY = os.environ.get('DOCKER_DEPLOY', False)
+FORCE_DEBUG = os.environ.get('FORCE_DEBUG', False)
 
-if DOCKER_DEBUG:
-    ALLOWED_HOSTS.append('localhost')
-
-if SECRET_KEY_FILE.exists():
+if SECRET_KEY_FILE.exists() or FORCE_DEBUG:
     DEBUG = True
     ALLOWED_HOSTS.append('localhost')
 
