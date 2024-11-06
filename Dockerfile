@@ -6,7 +6,7 @@ RUN apt-get install -y python3-dev python3-virtualenv libpq-dev
 RUN mkdir -p /opt/web /var/log/website
 COPY eastbay_massage /opt/web/eastbay_massage
 COPY templates/ /opt/web/templates
-COPY static /opt/web/static
+COPY staticfiles /opt/web/staticfiles
 COPY startup.sh requirements.txt manage.py /opt/web/
 RUN chmod +x /opt/web/startup.sh
 

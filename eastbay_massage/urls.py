@@ -26,3 +26,6 @@ urlpatterns = [
     path('send_message/', views.send_message, name='send_message'),
     path('message_successful/', views.message_successful, name='message_successful'),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
