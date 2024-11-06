@@ -45,7 +45,10 @@ ALLOWED_HOSTS = [
 DOCKER_DEBUG = os.environ.get('DOCKER_DEBUG', False)
 DOCKER_DEPLOY = os.environ.get('DOCKER_DEPLOY', False)
 
-if SECRET_KEY_FILE.exists() or DOCKER_DEBUG:
+if DOCKER_DEBUG:
+    ALLOWED_HOSTS.append('localhost')
+
+if SECRET_KEY_FILE.exists():
     DEBUG = True
     ALLOWED_HOSTS.append('localhost')
 
@@ -212,8 +215,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [
-    BASE_DIR / "static",
-    "/var/www/static/",
+    BASE_DIR / 'static'
 ]
 
 # Default primary key field type
