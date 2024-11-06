@@ -38,8 +38,14 @@ if SECRET_KEY is None:
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
+WEBSITE_HOSTNAME = 'eastbaymassageandlymph.com'
+
 ALLOWED_HOSTS = [
-    'eastbaymassageandlymph.com',
+    WEBSITE_HOSTNAME,
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    f'https://{WEBSITE_HOSTNAME}'
 ]
 
 FORCE_DEBUG = os.environ.get('FORCE_DEBUG', False)
