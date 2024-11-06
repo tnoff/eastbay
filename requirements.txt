@@ -5,3 +5,4 @@ gunicorn==23.0.0
 django-phonenumber-field==8.0.0
 phonenumbers==8.13.49
 phonenumberslite==8.13.49
+whitenoise==6.8.2

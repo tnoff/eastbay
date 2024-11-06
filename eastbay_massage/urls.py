@@ -25,4 +25,4 @@ urlpatterns = [
     path('', views.home, name='home_page'),
     path('send_message/', views.send_message, name='send_message'),
     path('message_successful/', views.message_successful, name='message_successful'),
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+]
