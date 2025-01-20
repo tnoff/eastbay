@@ -3,6 +3,6 @@ django-bootstrap5==24.3
 django-bootstrap-icons==0.9.0
 gunicorn==23.0.0
 django-phonenumber-field==8.0.0
-phonenumbers==8.13.52
+phonenumbers==8.13.53
 phonenumberslite==8.13.52
 whitenoise==6.8.2
