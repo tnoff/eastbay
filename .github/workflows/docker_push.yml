@@ -6,42 +6,18 @@ on:
     - closed
 
 jobs:
-  check_labels:
-    name: Check Build Label
-    runs-on: ubuntu-24.04
-    permissions:
-      contents: read
-    outputs:
-      labels: steps.pr-labels.outputs.labels
-    steps:
-      - name: Get PR labels
-        id: pr-labels
-        uses: joerick/pr-labels-action@v1.0.8
-      - name: Check pr merged
-        run: echo "${{ github.event.pull_request.merged }}"
-      - name: Check label contains
-        run: echo "${{ contains(steps.pr-labels.outputs.labels, 'build-docker') }}"
-      - name: Echo label
-        run: echo "${{ steps.pr-labels.outputs.labels }}"
-      - name: Full check
-        run: echo "${{ ((github.event.pull_request.merged == 'true') && (contains(needs.pr-labels.outputs.labels, 'build-docker')) == 'true') }}"
-      - name: Custom check full
-        run: echo "${{ github.event.pull_request.labels }}"
-      - name: Custom check
-        run: echo "${{ toJSON(github.event.pull_request.labels.*.name) }}"
-      - name: Custom check part dos
-        run: echo "${{ contains(github.event.pull_request.labels.*.name, 'build-docker') }}"
   push_to_registry:
     name: Push Docker Image
     runs-on: ubuntu-24.04
     permissions:
       contents: read
-    needs:
-      - check_labels
-    if: ((github.event.pull_request.merged == 'true') && (contains(needs.pr-labels.outputs.labels, 'build-docker')) == 'true')
     steps:
+      - name: Get PR labels
+        id: pr-labels
+        uses: joerick/pr-labels-action@v1.0.8
       - name: Check out the repo
         uses: actions/checkout@v4
+        if: !contains(steps.pr-labels.outputs.labels, 'build-docker')
       - name: Install doctl
         uses: digitalocean/action-doctl@v2
         with:
