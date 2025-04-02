@@ -21,3 +21,5 @@ $ python manage.py runserver
 ## Docker build
 
 Install docker and run, site ideally runs via docker or k8s.
+
+By default builds image and pushes to the digital ocean repo.
