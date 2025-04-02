@@ -17,7 +17,7 @@ jobs:
         uses: joerick/pr-labels-action@v1.0.8
       - name: Check out the repo
         uses: actions/checkout@v4
-        if: !contains(steps.pr-labels.outputs.labels, 'build-docker')
+        if: contains(steps.pr-labels.outputs.labels, 'build-docker')
       - name: Install doctl
         uses: digitalocean/action-doctl@v2
         with:
