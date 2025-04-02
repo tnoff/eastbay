@@ -1,9 +1,9 @@
 name: Tag and build docker image
 
 on:
-  push:
-    branches:
-    - main
+  pull_request:
+    types:
+      - closed
 
 jobs:
   push_to_registry:
