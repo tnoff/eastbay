@@ -20,11 +20,11 @@ jobs:
       - name: Check pr merged
         run: echo "${{ github.event.pull_request.merged }}"
       - name: Check label contains
-        run: echo "${{ contains(steps.check_labels.outputs.labels, 'build-docker') }}"
+        run: echo "${{ contains(steps.pr-labels.outputs.labels, 'build-docker') }}"
       - name: Echo label
-        run: echo "${{ steps.check_labels.outputs.labels }}"
+        run: echo "${{ steps.pr-labels.outputs.labels }}"
       - name: Full check
-        run: echo "${{ (github.event.pull_request.merged == true) && (contains(needs.check_labels.outputs.labels, 'build-docker')) }}"
+        run: echo "${{ (github.event.pull_request.merged == true) && (contains(needs.pr-labels.outputs.labels, 'build-docker')) }}"
   push_to_registry:
     name: Push Docker Image
     runs-on: ubuntu-24.04
