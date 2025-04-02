@@ -18,7 +18,7 @@ jobs:
         id: pr-labels
         uses: joerick/pr-labels-action@v1.0.8
       - name: Check pr merged
-        run: echo "${{ github.event.pull_request.merged }}
+        run: echo "${{ github.event.pull_request.merged }}"
       - name: Check label contains
         run: echo "${{ contains(steps.check_labels.outputs.labels, 'build-docker') }}"
       - name: Echo label
