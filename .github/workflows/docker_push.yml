@@ -25,6 +25,10 @@ jobs:
         run: echo "${{ steps.pr-labels.outputs.labels }}"
       - name: Full check
         run: echo "${{ (github.event.pull_request.merged == true) && (contains(needs.pr-labels.outputs.labels, 'build-docker')) }}"
+      - name: Custom check
+        run: echo "${{ toJSON(github.event.pull_request.labels.*.name) }}"
+      - name: Custom check part dos
+        run: echo "${{ contains(github.event.pull_request.labels.*.name, 'build-docker') }}"
   push_to_registry:
     name: Push Docker Image
     runs-on: ubuntu-24.04
