@@ -124,24 +124,7 @@ WSGI_APPLICATION = 'eastbay_massage.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-if 'PG_DB' in os.environ:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': os.environ['PG_DB'],
-            'USER': os.environ['PG_USER'],
-            'PASSWORD': os.environ['PG_PASSWORD'],
-            'HOST': os.environ['PG_HOST'],
-            'PORT': '5432',
-        }
-    }
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
-    }
+DATABASES = None
 
 LOG_FILE = '/var/log/website/website.log'
 

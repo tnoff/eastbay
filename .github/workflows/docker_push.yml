@@ -7,6 +7,7 @@ on:
 
 jobs:
   push_to_registry:
+    if: github.event.pull_request.merged == true && !contains(github.event.pull_request.labels.*.name, 'skip-docker-build')
     name: Push Docker Image
     runs-on: ubuntu-24.04
     permissions:
