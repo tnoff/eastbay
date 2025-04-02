@@ -25,6 +25,8 @@ jobs:
         run: echo "${{ steps.pr-labels.outputs.labels }}"
       - name: Full check
         run: echo "${{ (github.event.pull_request.merged == true) && (contains(needs.pr-labels.outputs.labels, 'build-docker')) }}"
+      - name: Custom check full
+        run: echo "${{ github.event.pull_request.labels }}"
       - name: Custom check
         run: echo "${{ toJSON(github.event.pull_request.labels.*.name) }}"
       - name: Custom check part dos
