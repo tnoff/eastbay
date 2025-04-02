@@ -18,7 +18,7 @@ jobs:
       id: check-label
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
-        pull-number: ${{ github.event.pull_request.number }}
+        pull-number: ${{ github.event.number }}
         labels: '["skip-docker-build"]'
   push_to_registry:
     name: Push Docker Image
