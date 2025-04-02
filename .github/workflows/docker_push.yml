@@ -6,28 +6,12 @@ on:
     - main
 
 jobs:
-  check_labels:
-    name: "Check labels"
-    runs-on: ubuntu-24.04
-    permissions:
-      contents: read
-    outputs:
-      result: ${{ steps.check-label.outputs.result }}
-    steps:
-    - uses: paul1k/check-pr-labels@d5a5270fd31704a9c7da37846f1b8fb77d11b747
-      id: check-label
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        pull-number: ${{ github.event.number }}
-        labels: '["skip-docker-build"]'
   push_to_registry:
     name: Push Docker Image
     runs-on: ubuntu-24.04
     permissions:
       contents: read
-    needs:
-      - check_labels
-    if: needs.check_labels.outputs.result == 'true'
+    if: ${{ (github.event.pull_request.merged == true) && (contains(github.event.pull_request.labels.*.name, 'skip-docker-build')) }}
     steps:
       - name: Check out the repo
         uses: actions/checkout@v4
