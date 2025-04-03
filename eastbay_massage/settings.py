@@ -118,8 +118,11 @@ TEMPLATES = [
     },
 ]
 
+WSGI_APPLICATION = 'eastbay_massage.wsgi.application'
 
- 
+
+# Database
+# https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 if 'PG_DB' in os.environ:
     DATABASES = {
@@ -139,9 +142,6 @@ else:
             'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
-
-WSGI_APPLICATION = 'eastbay_massage.wsgi.application'
-
 
 LOG_FILE = '/var/log/website/website.log'
 
@@ -217,11 +217,7 @@ USE_TZ = True
 
 
 STATIC_URL = 'static/'
-# STATIC_ROOT = BASE_DIR / 'staticfiles'
-
-STATICFILES_DIRS = [
-    BASE_DIR / "staticfiles",
-]
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
