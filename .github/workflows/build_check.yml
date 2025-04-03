@@ -9,8 +9,8 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
     # The checkout step
-    - uses: actions/checkout@v3
-    - uses: rojopolis/spellcheck-github-actions@0.47.0
+    - uses: actions/checkout@85e6279cec87321a52edac9c87bce653a07cf6c2
+    - uses: rojopolis/spellcheck-github-actions@23dc186319866e1de224f94fe1d31b72797aeec7
       name: Spellcheck
       with:
         config_path: .spellcheck/spellcheck.yml
@@ -20,10 +20,10 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@85e6279cec87321a52edac9c87bce653a07cf6c2
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
+      uses: docker/setup-buildx-action@941183f0a080fa6be59a9e3d3f4108c19a528204
     - name: Build image
-      uses: docker/build-push-action@v6
+      uses: docker/build-push-action@84ad562665bb303b549fec655d1b64f9945f3f91
       with:
         push: false
