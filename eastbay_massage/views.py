@@ -20,6 +20,7 @@ CONTACT_INFO = {
 def home(request):
   data = deepcopy(CONTACT_INFO)
   data['show_contact'] = False
+  data['form'] = EmailForm()
   return render(request, 'home.html', data)
 
 def message_successful(request):
