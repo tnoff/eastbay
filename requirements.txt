@@ -3,8 +3,8 @@ django-bootstrap5==25.1
 django-bootstrap-icons==0.9.0
 gunicorn==23.0.0
 django-phonenumber-field==8.1.0
-opentelemetry-exporter-otlp==1.34.1
-opentelemetry-sdk==1.34.1
-opentelemetry-instrumentation-django==0.55b1
+opentelemetry-exporter-otlp
+opentelemetry-sdk==1.35.0
+opentelemetry-instrumentation-django
 phonenumbers==9.0.9
 whitenoise==6.9.0
