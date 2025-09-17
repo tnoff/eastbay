@@ -7,4 +7,4 @@ opentelemetry-exporter-otlp
 opentelemetry-sdk==1.36.0
 opentelemetry-instrumentation-django
 phonenumbers==9.0.13
-whitenoise==6.9.0
+whitenoise==6.10.0
