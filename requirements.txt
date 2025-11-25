@@ -6,5 +6,5 @@ django-phonenumber-field==8.4.0
 opentelemetry-exporter-otlp
 opentelemetry-sdk==1.38.0
 opentelemetry-instrumentation-django
-phonenumbers==9.0.18
+phonenumbers==9.0.19
 whitenoise==6.11.0
