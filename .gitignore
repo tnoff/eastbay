@@ -1,13 +1,23 @@
-# Django stuff
+# Flask secret key
 secret_key
-*.sql
-*.sqlite
-*.sqlite3
+
+# Logs
 website.log*
 
-# Static Admin
-static/admin
-
 # Python stuff
-eastbay_massage/__pycache__/
+__pycache__/
 *.pyc
+*.pyo
+*.pyd
+.Python
+
+# Virtual environment
+venv/
+env/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo

@@ -1,10 +1,9 @@
-Django==5.2.8
-django-bootstrap5==25.3
-django-bootstrap-icons==0.9.0
+Flask==3.1.0
+Flask-WTF==1.2.2
+WTForms==3.2.1
+email-validator==2.1.0
 gunicorn==23.0.0
-django-phonenumber-field==8.4.0
 opentelemetry-exporter-otlp
 opentelemetry-sdk==1.38.0
-opentelemetry-instrumentation-django
+opentelemetry-instrumentation-flask
 phonenumbers==9.0.19
-whitenoise==6.11.0

@@ -1,15 +1,10 @@
 {% extends  "base.html" %}
-{% load django_bootstrap5 %}
-{% bootstrap_css %}
-{% bootstrap_javascript %}
-{% load bootstrap_icons %}
-{% load static %}
 
 {% block content %}
 <div class="container" id="info">
     <div id="info" class="row align-items-center row-eq-height">
         <div class="row">
-            <img class="rounded"  src="{% static 'images/header.jpg' %}" width="50%" height="50%">
+            <img class="rounded"  src="{{ url_for('static', filename='images/header.jpg') }}" width="50%" height="50%">
         </div>
         <div class="row">
             <div class="row">
@@ -30,7 +25,7 @@
     </div>
     <hr class="featurette-divider">
     <div class="row home-button">
-        <a onclick="updateButtonText('button-services', 'Services')" id="button-services" class="btn-lg btn btn-secondary" data-bs-toggle="collapse" href="#services" role="button" aria-expanded="false" aria-controls="services">Services {% bs_icon 'arrow-down' %}</a>
+        <a onclick="updateButtonText('button-services', 'Services')" id="button-services" class="btn-lg btn btn-secondary" data-bs-toggle="collapse" href="#services" role="button" aria-expanded="false" aria-controls="services">Services <i class="bi bi-arrow-down"></i></a>
     </div>
     <div class="row collapse" id="services">
         <div class="row featurette">
@@ -50,7 +45,7 @@
     </div>
     <hr class="featurette-divider">
     <div class="row home-button">
-        <a onclick="updateButtonText('button-prices', 'Prices')" id="button-prices" class="btn-lg btn btn-secondary" data-bs-toggle="collapse" href="#prices" role="button" aria-expanded="false" aria-controls="prices">Prices {% bs_icon 'arrow-down' %}</a>
+        <a onclick="updateButtonText('button-prices', 'Prices')" id="button-prices" class="btn-lg btn btn-secondary" data-bs-toggle="collapse" href="#prices" role="button" aria-expanded="false" aria-controls="prices">Prices <i class="bi bi-arrow-down"></i></a>
     </div>
     <div class="row collapse" id="prices">
         <h2 align="center">Massage</h2>
@@ -85,7 +80,7 @@
     </div>
     <hr class="featurette-divider">
     <div class="row home-button">
-        <a onclick="updateButtonText('button-policies', 'Policies')" id="button-policies" class="btn-lg btn btn-secondary" data-bs-toggle="collapse" href="#policies" role="button" aria-expanded="false" aria-controls="policies">Policies {% bs_icon 'arrow-down' %}</a>
+        <a onclick="updateButtonText('button-policies', 'Policies')" id="button-policies" class="btn-lg btn btn-secondary" data-bs-toggle="collapse" href="#policies" role="button" aria-expanded="false" aria-controls="policies">Policies <i class="bi bi-arrow-down"></i></a>
     </div>
     <div class="row collapse" id="policies">
         <h2 align="center">Policies</h2>
@@ -96,13 +91,13 @@
     </div>
     <hr class="featurette-divider">
     <div class="row home-button">
-        <a onclick="updateButtonText('button-about', 'About')" id="button-about"  class="btn-lg btn btn-secondary" data-bs-toggle="collapse" href="#about" role="button" aria-expanded="false" aria-controls="about">About {% bs_icon 'arrow-down' %}</a>
+        <a onclick="updateButtonText('button-about', 'About')" id="button-about"  class="btn-lg btn btn-secondary" data-bs-toggle="collapse" href="#about" role="button" aria-expanded="false" aria-controls="about">About <i class="bi bi-arrow-down"></i></a>
     </div>
     <div class="row collapse" id="about">
         <div id="info" class="row align-items-center row-eq-height">
             <div class="col-3">
                 <div class="row">
-                    <img class="rounded" src="{% static 'images/headshot.jpg' %}" width="25%" height="25%" alt="Photo of Trang Phan">
+                    <img class="rounded" src="{{ url_for('static', filename='images/headshot.jpg') }}" width="25%" height="25%" alt="Photo of Trang Phan">
                 </div>
                 <div align="center" class="row">
                     <p class="dont-break-out">Trang Phan CMT</p>
@@ -139,7 +134,7 @@
     </div>
     <hr class="featurette-divider">
     <div class="row home-button">
-        <a onclick="updateButtonText('button-contact', 'Contact')" id="button-contact"  class="btn-lg btn btn-secondary" data-bs-toggle="collapse" href="#contact" role="button" aria-expanded="false" aria-controls="about">Contact {% bs_icon 'arrow-down' %}</a>
+        <a onclick="updateButtonText('button-contact', 'Contact')" id="button-contact"  class="btn-lg btn btn-secondary" data-bs-toggle="collapse" href="#contact" role="button" aria-expanded="false" aria-controls="about">Contact <i class="bi bi-arrow-down"></i></a>
     </div>
     {% if show_contact %}
     <div class="row show" id="contact">
@@ -148,48 +143,29 @@
     {% endif %}
         <h3 align="center">Contact Form</h3>
         {% if form.errors %}
-        {% for field in form %}
-            {% for error in field.errors %}
-                <div class="alert alert-danger">
-                    <strong>{{ error|escape }}</strong>
-                </div>
+            {% for field_name, field_errors in form.errors.items() %}
+                {% if field_name != 'csrf_token' %}
+                    {% for error in field_errors %}
+                        <div class="alert alert-danger">
+                            <strong>{{ error }}</strong>
+                        </div>
+                    {% endfor %}
+                {% endif %}
             {% endfor %}
-        {% endfor %}
-        {% for error in form.non_field_errors %}
-            <div class="alert alert-danger">
-                <strong>{{ error|escape }}</strong>
-            </div>
-        {% endfor %}
         {% endif %}
         <form method="post" action="/send_message/">
-            {% csrf_token %}
+            {{ form.csrf_token }}
             <div class="row label-row">
-                {% if form.cleaned_data.name %}
-                <input type="text" id="name" name="name" class="form-control" aria-describedby="Your Name" maxlength="1024" value="{{form.cleaned_data.name}}" required>
-                {% else %}
-                <input type="text" id="name" name="name" class="form-control" aria-describedby="Your Name" placeholder="Your Name" maxlength="1024" required>
-                {% endif %}
+                <input type="text" id="name" name="name" class="form-control" aria-describedby="Your Name" placeholder="Your Name" maxlength="1024" value="{{ form.name.data or '' }}" required>
             </div>
             <div class="row label-row">
-                {% if form.cleaned_data.email %}
-                <input type="text" id="email" name="email" class="form-control" aria-describedby="name@example.com" maxlength="1024" value="{{ form.cleaned_data.email }}" required>
-                {% else %}
-                <input type="text" id="email" name="email" class="form-control" aria-describedby="name@example.com" placeholder="Email" maxlength="1024" required>
-                {% endif %}
+                <input type="text" id="email" name="email" class="form-control" aria-describedby="name@example.com" placeholder="Email" maxlength="1024" value="{{ form.email.data or '' }}" required>
             </div>
             <div class="row label-row">
-                {% if form.cleaned_data.email %}
-                <input type="tel" id="phone_number" name="phone_number" placeholder="Not required" class="form-control" value="{{ form.cleaned_data.phone_number }}" aria-describedby="555-123-456">
-                {% else %}
-                <input type="tel" id="phone_number" name="phone_number" class="form-control" placeholder="Phone Number (Not Required)" aria-describedby="555-123-456">
-                {% endif %}
+                <input type="tel" id="phone_number" name="phone_number" class="form-control" placeholder="Phone Number (Not Required)" aria-describedby="555-123-456" value="{{ form.phone_number.data or '' }}">
             </div>
             <div class="row label-row">
-                {% if form.cleaned_data.message %}
-                <textarea rows="3" id="message" name="message" class="form-control"  value="{{ form.cleaned_data.message }}" maxlength="30720" required>{{ form.cleaned_data.message }}</textarea>
-                {% else %}
-                <textarea rows="3" id="message" name="message" class="form-control"  placeholder="Additional Message" maxlength="30720" required></textarea>
-                {% endif %}
+                <textarea rows="3" id="message" name="message" class="form-control" placeholder="Additional Message" maxlength="30720" required>{{ form.message.data or '' }}</textarea>
             </div>
             <div class="row" id="submit-row">
                 <div align="center">
@@ -203,9 +179,9 @@
     function updateButtonText(buttonId, buttonText){
         var buttonElement = document.getElementById(buttonId);
         if (buttonElement.innerHTML.includes("arrow-down")){
-            buttonElement.innerHTML = `${buttonText} {% bs_icon 'arrow-up' %}`;
+            buttonElement.innerHTML = `${buttonText} <i class="bi bi-arrow-up"></i>`;
         } else if (buttonElement.innerHTML.includes("arrow-up")){
-            buttonElement.innerHTML = `${buttonText} {% bs_icon 'arrow-down' %}`;
+            buttonElement.innerHTML = `${buttonText} <i class="bi bi-arrow-down"></i>`;
         }
     }
 </script>

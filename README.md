@@ -2,7 +2,7 @@
 
 Eastbay Massage and lymph website.
 
-Basic django, doesn't really need to be django, mostly html.
+Simple Flask application, mostly static HTML with a contact form.
 
 ## Install requirements
 
@@ -14,8 +14,14 @@ $ pip install -r requirements.txt
 
 ## Run the server
 
+Development mode:
 ```
-$ python manage.py runserver
+$ python app.py
+```
+
+Production mode (with gunicorn):
+```
+$ gunicorn --bind 0.0.0.0:8000 --workers 4 app:app
 ```
 
 ## Docker build

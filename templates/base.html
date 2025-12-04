@@ -1,16 +1,15 @@
 <!doctype html>
-
-{% load django_bootstrap5 %}
-{% bootstrap_css %}
-{% bootstrap_javascript %}
-{% load bootstrap_icons %}
-{% load static %}
-
 <html lang="en">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <title>East Bay Massage and Lymph Drainage</title>
+        <!-- Bootstrap CSS -->
+        <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+        <!-- Bootstrap Icons -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-icons.min.css') }}">
+        <!-- Bootstrap JavaScript -->
+        <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
     </head>
 
     <!-- Custom CSS Styles -->
