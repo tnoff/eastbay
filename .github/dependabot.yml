@@ -3,8 +3,12 @@ updates:
   - package-ecosystem: "pip"
     directory: "."
     schedule:
-      interval: "weekly"
+      interval: "daily"
+    labels:
+      - "build-docker"
   - package-ecosystem: "docker"
-    directory: "/"
+    directory: "."
     schedule:
-      interval: "weekly"
+      interval: "daily"
+    labels:
+      - "build-docker"
