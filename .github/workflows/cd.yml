@@ -6,49 +6,32 @@ on:
     - closed
 
 jobs:
-  check_merge_and_tag:
-    name: Check merge and tag
-    runs-on: ubuntu-24.04
+  tag_build:
+    permissions:
+      contents: write
+    uses: tnoff/github-workflows/.github/workflows/tag.yml@f1ccc6f7845e103773faa0c4f1a61b7feeeddc10
+    with:
+      version_file: ./VERSION
+  check_labels:
     permissions:
       contents: read
-    outputs:
-      status: ${{ steps.check.conclusion }}
-    steps:
-      - name: Get PR labels
-        id: pr-labels
-        uses: joerick/pr-labels-action@e61c643fe47e53d3495405cc9f441b5da06ab1e9
-      - name: Check merge and labels
-        id: check
-        if: ${{ github.event.pull_request.merged == true && (contains(steps.pr-labels.outputs.labels, 'build-docker')) }}
-        run: exit 0
-  push_to_oci:
-    name: Push Docker Image to OCI
-    runs-on: ubuntu-24.04
+      pull-requests: read
+    uses: tnoff/github-workflows/.github/workflows/check-pr-labels.yml@f1ccc6f7845e103773faa0c4f1a61b7feeeddc10
+    with:
+      required_labels: 'build-docker'
+      require_all_labels: true
+      require_merged: true
+  build:
     permissions:
       contents: read
-    needs:
-      - check_merge_and_tag
-    if: needs.check_merge_and_tag.outputs.status == 'success'
-    steps:
-      - name: Check out the repo
-        uses: actions/checkout@v4
-      - name: Get github hash
-        id: github-hash
-        run: echo "github_hash=$(echo $GITHUB_SHA | head -c7)" >> $GITHUB_OUTPUT
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-      - name: Login to OCIR
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ secrets.OCI_REGISTRY }}
-          username: ${{ secrets.OCI_USERNAME }}
-          password: ${{ secrets.OCI_TOKEN }}
-      - name: Build and push
-        uses: docker/build-push-action@v6
-        with:
-          platforms: linux/amd64,linux/arm64
-          push: true
-          context: .
-          tags: ${{ secrets.OCI_REGISTRY }}/${{ secrets.OCI_REPO_NAME }}:latest,${{ secrets.OCI_REGISTRY }}/${{ secrets.OCI_REPO_NAME }}:${{ steps.github-hash.outputs.github_hash }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+    needs: check_labels
+    if: needs.check_labels.outputs.conditions_met == 'true'
+    uses: tnoff/github-workflows/.github/workflows/ocir-push.yml@f1ccc6f7845e103773faa0c4f1a61b7feeeddc10
+    with:
+      image_name: ${{ vars.OCI_REPO_NAME }}
+      platforms: linux/amd64,linux/arm64
+    secrets:
+      oci_registry: ${{ secrets.OCI_REGISTRY }}
+      oci_username: ${{ secrets.OCI_USERNAME }}
+      oci_token: ${{ secrets.OCI_TOKEN }}
+      oci_namespace: ${{ secrets.OCI_NAMESPACE }}
