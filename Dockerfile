@@ -9,4 +9,10 @@ RUN chmod +x /opt/web/startup.sh
 RUN pip install -r /opt/web/requirements.txt
 RUN rm /opt/web/requirements.txt
 
+# Create non-root user and set ownership
+RUN useradd -r -u 1000 -m -s /bin/bash appuser && \
+    chown -R appuser:appuser /opt/web /var/log/website
+
+USER appuser
+
 CMD ["/opt/web/startup.sh"]
