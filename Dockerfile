@@ -1,5 +1,10 @@
 FROM python:3.14-slim-bookworm
 
+# Update to latest for security fixes
+RUN apt-get update && \
+    apt-get upgrade -y --no-install-recommends && \
+    rm -rf /var/lib/apt/lists/*
+
 RUN mkdir -p /opt/web /var/log/website
 COPY templates/ /opt/web/templates
 COPY staticfiles /opt/web/staticfiles
