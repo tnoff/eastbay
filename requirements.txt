@@ -6,4 +6,4 @@ gunicorn==25.1.0
 opentelemetry-exporter-otlp
 opentelemetry-sdk==1.39.1
 opentelemetry-instrumentation-flask
-phonenumbers==9.0.24
+phonenumbers==9.0.25
