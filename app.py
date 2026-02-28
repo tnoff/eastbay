@@ -204,6 +204,10 @@ def message_successful():
                          contact_email=app.config['CONTACT_EMAIL'],
                          contact_number=app.config['CONTACT_NUMBER'])
 
+@app.route('/health')
+def health():
+    return 'OK', 200
+
 # Error handlers
 @app.errorhandler(403)
 def forbidden(e):
