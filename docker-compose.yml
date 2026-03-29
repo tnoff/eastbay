@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - FLASK_SECRET_KEY=${FLASK_SECRET_KEY:-dev-secret-key-change-in-production}
+      - FORCE_DEBUG=true
+      - CONTACT_EMAIL=${CONTACT_EMAIL}
+      - CONTACT_NUMBER=${CONTACT_NUMBER}
+      - EMAIL_HOST=${EMAIL_HOST:-smtp.gmail.com}
+      - EMAIL_PORT=${EMAIL_PORT:-587}
+      - EMAIL_HOST_USER=${EMAIL_HOST_USER}
+      - EMAIL_HOST_PASSWORD=${EMAIL_HOST_PASSWORD:-}
+    volumes:
+      - ./app.py:/opt/web/app.py
+      - ./templates:/opt/web/templates
+      - ./staticfiles:/opt/web/staticfiles
+      - ./logs:/var/log/website
+    restart: unless-stopped

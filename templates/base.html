@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>East Bay Massage and Lymph Drainage</title>
+        <!-- Bootstrap CSS -->
+        <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+        <!-- Bootstrap Icons -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-icons.min.css') }}">
+        <!-- Bootstrap JavaScript -->
+        <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+    </head>
+
+    <!-- Custom CSS Styles -->
+    <style type="text/css">
+        html {
+          position: relative;
+          min-height: 100%;
+        }
+        body {
+            background-color: #F5FAFA;
+            margin: 0 0 50px;
+            padding-bottom: 25px;
+            padding-top: 100px;
+            padding-left: 20px;
+            padding-right: 20px;
+        } 
+        footer {
+          position: absolute;
+          left: 0;
+          bottom: 0;
+          height: 100px;
+          width: 100%;
+          overflow: hidden;
+          padding-top: 70px;
+        }
+        ul {
+           list-style-position: inside;
+        }
+        p {
+            text-wrap: pretty;
+        }
+        .btn-secondary {
+            background-color: #99b898;
+        }
+        td {
+            text-align: left;
+        }
+        .home-button {
+            padding-bottom: 10px;
+        }
+        #submit-row {
+            padding-top: 10px;
+        }
+        .label-row {
+            padding-bottom: 10px;
+        }
+        .dont-break-out {
+            /* https://css-tricks.com/snippets/css/prevent-long-urls-from-breaking-out-of-container/ */
+            /* These are technically the same, but use both */
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+
+            -ms-word-break: break-all;
+            /* This is the dangerous one in WebKit, as it breaks things wherever */
+            word-break: break-all;
+            /* Instead use this non-standard one: */
+            word-break: break-word;
+
+            /* Adds a hyphen where the word breaks, if supported (No Blink) */
+            -ms-hyphens: auto;
+            -moz-hyphens: auto;
+            -webkit-hyphens: auto;
+            hyphens: auto;
+        }
+    </style>
+    <body>
+        <div>
+            <nav class="navbar navbar-expand-md navbar-light fixed-top" style="background-color: #99b898;">
+                <div class="container-fluid">
+                <a class="navbar-brand" href="/"><b>East Bay Massage and Lymph Drainage</b></a>
+            </nav>
+        </div>
+    {% block content %}
+    {% endblock content %}
+    </body>
+</html>
