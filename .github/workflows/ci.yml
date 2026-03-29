@@ -33,6 +33,9 @@ jobs:
       env:
         FLASK_SECRET_KEY: test-secret-key
         FORCE_DEBUG: false
+        CONTACT_EMAIL: test@example.com
+        CONTACT_NUMBER: 555-555-5555
+        EMAIL_HOST_USER: test@example.com
       run: |
         python test_app.py
   docker:
