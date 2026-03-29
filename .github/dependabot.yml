@@ -12,3 +12,7 @@ updates:
       interval: "daily"
     labels:
       - "build-docker"
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "daily"
