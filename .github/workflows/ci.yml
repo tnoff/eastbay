@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
     # The checkout step
-    - uses: actions/checkout@85e6279cec87321a52edac9c87bce653a07cf6c2
+    - uses: actions/checkout@0c366fd6a839edf440554fa01a7085ccba70ac98
     - uses: rojopolis/spellcheck-github-actions@e3cd8e9aec4587ec73bc0e60745aafd45c37aa2e
       name: Spellcheck
       with:
@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
     - name: Checkout code
-      uses: actions/checkout@85e6279cec87321a52edac9c87bce653a07cf6c2
+      uses: actions/checkout@0c366fd6a839edf440554fa01a7085ccba70ac98
     - name: Set up Python
       uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
       with:
@@ -44,7 +44,7 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@85e6279cec87321a52edac9c87bce653a07cf6c2
+    - uses: actions/checkout@0c366fd6a839edf440554fa01a7085ccba70ac98
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@172dff065fb2e54aaed577fd667975cd412819fb
     - name: Build image
