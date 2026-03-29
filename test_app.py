@@ -1,5 +1,11 @@
+import os
 import unittest
 from unittest.mock import patch, MagicMock
+
+os.environ.setdefault('CONTACT_EMAIL', 'test@example.com')
+os.environ.setdefault('CONTACT_NUMBER', '555-555-5555')
+os.environ.setdefault('EMAIL_HOST_USER', 'test@example.com')
+
 from app import app, ContactForm
 
 class FlaskAppTestCase(unittest.TestCase):

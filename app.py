@@ -56,13 +56,19 @@ class Config:
         DEBUG = True
 
     # Contact info
-    CONTACT_EMAIL = os.environ.get('CONTACT_EMAIL', 'trang@eastbaymassageandlymph.com')
-    CONTACT_NUMBER = os.environ.get('CONTACT_NUMBER', '(925) 570-7495')
+    CONTACT_EMAIL = os.environ.get('CONTACT_EMAIL')
+    if CONTACT_EMAIL is None:
+        raise Exception('CONTACT_EMAIL env var is required')
+    CONTACT_NUMBER = os.environ.get('CONTACT_NUMBER')
+    if CONTACT_NUMBER is None:
+        raise Exception('CONTACT_NUMBER env var is required')
 
     # Email settings
     EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp.gmail.com')
     EMAIL_PORT = int(os.environ.get('EMAIL_PORT', 587))
-    EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'eastbaymassageandlymph@gmail.com')
+    EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+    if EMAIL_HOST_USER is None:
+        raise Exception('EMAIL_HOST_USER env var is required')
     EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', None)
     EMAIL_ENABLED = EMAIL_HOST_PASSWORD is not None
 

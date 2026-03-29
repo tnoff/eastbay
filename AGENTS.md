@@ -72,10 +72,10 @@ Simple Flask application with all code in a single `app.py` file:
 **Key Environment Variables:**
 - `FLASK_SECRET_KEY` - Required in production (or use `secret_key` file for dev)
 - `FORCE_DEBUG` - Force debug mode even without secret_key file
-- `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD` - Gmail SMTP credentials for contact form
+- `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD` - Gmail SMTP credentials for contact form (EMAIL_HOST_USER required)
 - `EMAIL_HOST`, `EMAIL_PORT` - SMTP server configuration (defaults to Gmail)
-- `CONTACT_EMAIL` - Recipient email (default: trang@eastbaymassageandlymph.com)
-- `CONTACT_NUMBER` - Phone number displayed on site
+- `CONTACT_EMAIL` - Recipient email (required)
+- `CONTACT_NUMBER` - Phone number displayed on site (required)
 
 **Email Functionality:**
 - Email sending is disabled unless `EMAIL_HOST_PASSWORD` is set
