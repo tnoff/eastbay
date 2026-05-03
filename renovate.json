@@ -1,5 +1,13 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:recommended"],
-  "enabledManagers": ["dockerfile", "gitlabci", "pep621"]
+  "enabledManagers": ["dockerfile", "gitlabci", "pep621"],
+  "rebaseWhen": "behind-base-branch",
+  "packageRules": [
+    {
+      "matchUpdateTypes": ["patch"],
+      "additionalBranchPrefix": "dev-",
+      "automerge": true
+    }
+  ]
 }
