@@ -1,13 +1,20 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:recommended"],
-  "enabledManagers": ["dockerfile", "gitlabci", "pep621"],
+  "extends": [
+    "config:recommended"
+  ],
+  "enabledManagers": ["gitlabci", "gitlabci-include", "pep621", "dockerfile"],
   "rebaseWhen": "behind-base-branch",
   "packageRules": [
     {
-      "matchUpdateTypes": ["patch"],
-      "additionalBranchPrefix": "dev-",
+      "matchPackageNames": ["pytest", "pytest-cov", "pytest-mock", "requests-mock", "tox", "pylint", "bandit"],
+      "additionalBranchPrefix": "test-",
       "automerge": true
+    },
+    {
+      "matchManagers": ["pep621", "dockerfile"],
+      "matchPackageNames": ["!pytest", "!pytest-cov", "!pytest-mock", "!requests-mock", "!tox", "!pylint", "!bandit"],
+      "additionalBranchPrefix": "dev-"
     }
   ]
 }
