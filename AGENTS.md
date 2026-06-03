@@ -1,136 +1,98 @@
 # AGENTS.md
 
-This file provides guidance to AI coding agents when working with code in this repository.
+Guidance for AI coding agents working in this repository. For an
+overview of the site, env-var schema, and routes see [README.md](README.md);
+for local setup, tests, and Docker build see [DEVELOPMENT.md](DEVELOPMENT.md).
 
-## Project Overview
+## What this is
 
-Eastbay Massage and Lymph website - a simple Flask application for a massage therapy business. The site is primarily static HTML with a contact form. The site is designed to run in Docker/Kubernetes on Digital Ocean.
+Single-file Flask app (`app.py`) with a Jinja2 template directory and
+a static-files directory. Everything — config loading, OpenTelemetry
+setup, the contact form, email delivery, route handlers, error
+handlers — lives in `app.py`. There is no application factory and no
+blueprint structure; if you need to add a route, add it to `app.py`.
 
-## Development Commands
-
-### Setup
-```bash
-pip install -r requirements.txt
+```
+.
+├── app.py             # Everything
+├── templates/         # base.html, home.html, message.html
+├── staticfiles/       # CSS, JS, images
+├── test_app.py        # unittest tests
+├── startup.sh         # Container entrypoint (runs gunicorn)
+├── Dockerfile         # python:3.14-slim-bookworm
+├── docker-compose.yml # Local dev convenience
+├── requirements.txt
+└── VERSION            # source of truth for release tagging
 ```
 
-### Run Development Server
-```bash
-# Development mode (using Flask's built-in server)
-python app.py
+## Non-obvious internals
 
-# Production mode (using gunicorn)
-gunicorn --bind 0.0.0.0:8000 --workers 4 app:app
-```
+### Dev vs prod is detected by the `secret_key` *file*
 
-The development server runs on http://localhost:8000 by default.
+`app.py` checks for a file named `secret_key` in the working directory
+on startup. If present, the app runs in **debug mode** and uses the
+file contents as the Flask secret key. If absent, the app reads
+`FLASK_SECRET_KEY` from the environment. `FORCE_DEBUG=1` overrides to
+debug mode regardless.
 
-### Run Tests
-```bash
-# Run all tests
-python -m unittest test_app.py
+This dual mechanism exists because containers in dev sometimes have
+the file mounted but no env var; prod has the env var but no file. If
+you change the detection logic, both paths need to keep working.
 
-# Run with verbose output
-python -m unittest -v test_app.py
+### Email is opt-in via `EMAIL_HOST_PASSWORD`
 
-# Run specific test class
-python -m unittest test_app.FlaskAppTestCase
+The contact form submission code calls `smtplib.SMTP` **only if**
+`EMAIL_HOST_PASSWORD` is set. With it unset (the default in dev), the
+form payload is logged to stdout and the user still sees the success
+page. This is intentional — it keeps local dev from spamming a real
+inbox.
 
-# Run specific test method
-python -m unittest test_app.FlaskAppTestCase.test_home_page_loads
-```
+If you ever consolidate the `if EMAIL_HOST_PASSWORD` guard, preserve
+the "log and succeed" behaviour for the unset case. Failing the
+submission silently when the operator forgot to set a password would
+be a worse UX than continuing.
 
-### Docker Build
-```bash
-docker build -t eastbay-massage .
-```
+### OTel is unconditional
 
-The Dockerfile uses Python 3.14-slim-bookworm.
+`setup_otel(app)` runs at import time and registers OTLP exporters
+unconditionally. Without an OTLP collector reachable at the SDK's
+default endpoint, exports fail but the app still works. In local dev
+this generates warning logs; if you want them silent, set
+`OTEL_SDK_DISABLED=true`. Don't add an in-code gate to disable OTel
+based on env — the SDK already has one.
 
-## Architecture
+### `phonenumbers` validation, not WTForms
 
-### Application Structure
+Phone numbers are validated by calling `phonenumbers.parse(..., 'US')`
+directly inside a custom WTForms validator, not via a third-party
+WTForms-phonenumbers extension. Region defaults to `US`. If we need
+to accept international numbers, lift the region default — don't
+add another library.
 
-Simple Flask application with all code in a single `app.py` file:
+### Static files served by Flask in both modes
 
-- **app.py** - Main Flask application containing:
-  - Configuration (Config class)
-  - OpenTelemetry setup
-  - ContactForm (Flask-WTF form)
-  - Email sending logic
-  - Route handlers (home, send_message, message_successful)
-  - Error handlers
-- **templates/** - Jinja2 templates (base.html, home.html, message.html)
-- **staticfiles/** - Static assets (served by Flask in dev, gunicorn in production)
-- **test_app.py** - Unit tests for the application
+Even in production (gunicorn), static files are served by Flask, not
+by a fronting nginx. This works because the container sits behind
+ingress-nginx in the cluster and the request volume is low. If
+traffic ever matters, the right fix is to add a `Cache-Control` header
+on `/static/`, not to add a nginx sidecar.
 
-### Configuration & Environment
+### Logs go to file, not just stdout
 
-**Development vs Production Detection:**
-- If `secret_key` file exists locally → Development mode (DEBUG=True)
-- Otherwise → Production mode (reads FLASK_SECRET_KEY from environment)
+Both dev and prod use a `RotatingFileHandler`:
 
-**Key Environment Variables:**
-- `FLASK_SECRET_KEY` - Required in production (or use `secret_key` file for dev)
-- `FORCE_DEBUG` - Force debug mode even without secret_key file
-- `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD` - Gmail SMTP credentials for contact form (EMAIL_HOST_USER required)
-- `EMAIL_HOST`, `EMAIL_PORT` - SMTP server configuration (defaults to Gmail)
-- `CONTACT_EMAIL` - Recipient email (required)
-- `CONTACT_NUMBER` - Phone number displayed on site (required)
+- Dev: `website.log` in the project root
+- Prod: `/var/log/website/website.log`
 
-**Email Functionality:**
-- Email sending is disabled unless `EMAIL_HOST_PASSWORD` is set
-- Uses Gmail SMTP by default
-- Contact form data is printed to console when email is disabled
-- Sends email via Python's smtplib directly (no framework wrapper needed)
+Rotation is 5 MB × 5 backups. The Dockerfile creates `/var/log/website`;
+the K8s manifest in `docker-apps` mounts a writable volume there.
+Don't switch to stdout-only without also stripping the file handler.
 
-### Key Features
+## Conventions
 
-**OpenTelemetry Integration:**
-- Configured in `app.py` with OTLP exporters for traces and logs
-- Flask is automatically instrumented via FlaskInstrumentor
-- Exports to standard OTLP gRPC endpoint
-
-**Static Files:**
-- Served from `staticfiles/` directory
-- Flask static file serving in development
-- Gunicorn serves static files in production
-- Bootstrap 5 and Bootstrap Icons loaded via CDN (no package dependencies)
-
-**Logging:**
-- Logs to `/var/log/website/website.log` in production
-- Logs to `website.log` in project root during development
-- Rotating file handler (5MB max, 5 backups)
-- CSRF violations logged via Flask error handler
-
-**Form Validation:**
-- ContactForm uses Flask-WTF and WTForms
-- Phone number validation via `phonenumbers` library directly
-- Default region: US
-- Email validation via WTForms Email validator
-- Max message length: 30KB
-- CSRF protection via Flask-WTF
-
-### URL Routes
-
-1. `/` - Home page with contact form (GET)
-2. `/send_message/` - Form submission endpoint (POST only)
-3. `/message_successful/` - Success confirmation page (GET)
-
-## Deployment
-
-The site is containerized and deploys to Digital Ocean:
-- Container startup script: `startup.sh`
-- Runs gunicorn with 4 workers
-- Serves on port 8000 internally
-- Production domain: eastbaymassageandlymph.com
-
-## Testing Philosophy
-
-Tests focus on critical functionality:
-- Route accessibility and rendering (FlaskAppTestCase)
-- Form validation and submission (FlaskAppTestCase)
-- Email sending when enabled (with mocking)
-- CSRF protection
-- Form field validation (ContactFormTestCase)
-
-Use Python's unittest framework with Flask's test_client for integration testing.
+- New routes go in `app.py` next to the existing handlers, not in a
+  separate module.
+- New env vars get a default in `Config` and a row in
+  [README.md](README.md#configuration).
+- New tests go in `test_app.py` mirroring the existing
+  `FlaskAppTestCase` / `ContactFormTestCase` split.
