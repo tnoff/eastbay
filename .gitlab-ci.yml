@@ -1,36 +1,36 @@
 include:
   - project: 'tnoff-projects/github-workflows'
-    ref: 04c5fd3ccff6dca038591aafcc321d759630aad1
+    ref: 59a8d3dea0b748ce38fcbe3e997bec39ec7ab4b6
     file: '/gitlab/tag.yml'
   - project: 'tnoff-projects/github-workflows'
-    ref: 04c5fd3ccff6dca038591aafcc321d759630aad1
+    ref: 59a8d3dea0b748ce38fcbe3e997bec39ec7ab4b6
     file: '/gitlab/discord-notify.yml'
   - project: 'tnoff-projects/github-workflows'
-    ref: 04c5fd3ccff6dca038591aafcc321d759630aad1
+    ref: 59a8d3dea0b748ce38fcbe3e997bec39ec7ab4b6
     file: '/gitlab/renovate.yml'
   - project: 'tnoff-projects/github-workflows'
-    ref: 04c5fd3ccff6dca038591aafcc321d759630aad1
+    ref: 59a8d3dea0b748ce38fcbe3e997bec39ec7ab4b6
     file: '/gitlab/branch-cleanup.yml'
   - project: 'tnoff-projects/github-workflows'
-    ref: 04c5fd3ccff6dca038591aafcc321d759630aad1
+    ref: 59a8d3dea0b748ce38fcbe3e997bec39ec7ab4b6
     file: '/gitlab/trufflehog.yml'
   - project: 'tnoff-projects/github-workflows'
-    ref: 04c5fd3ccff6dca038591aafcc321d759630aad1
+    ref: 59a8d3dea0b748ce38fcbe3e997bec39ec7ab4b6
     file: '/gitlab/trufflehog-image.yml'
   - project: 'tnoff-projects/github-workflows'
-    ref: 04c5fd3ccff6dca038591aafcc321d759630aad1
+    ref: 59a8d3dea0b748ce38fcbe3e997bec39ec7ab4b6
     file: '/gitlab/bump-version.yml'
   - project: 'tnoff-projects/github-workflows'
-    ref: 04c5fd3ccff6dca038591aafcc321d759630aad1
+    ref: 59a8d3dea0b748ce38fcbe3e997bec39ec7ab4b6
     file: '/gitlab/trigger-bump.yml'
   - project: 'tnoff-projects/github-workflows'
-    ref: 04c5fd3ccff6dca038591aafcc321d759630aad1
+    ref: 59a8d3dea0b748ce38fcbe3e997bec39ec7ab4b6
     file: '/gitlab/buildkit-build-check.yml'
   - project: 'tnoff-projects/github-workflows'
-    ref: 04c5fd3ccff6dca038591aafcc321d759630aad1
+    ref: 59a8d3dea0b748ce38fcbe3e997bec39ec7ab4b6
     file: '/gitlab/buildkit-docker-push.yml'
   - project: 'tnoff-projects/github-workflows'
-    ref: 04c5fd3ccff6dca038591aafcc321d759630aad1
+    ref: 59a8d3dea0b748ce38fcbe3e997bec39ec7ab4b6
     file: '/gitlab/spellcheck.yml'
 
 default:
