@@ -6,7 +6,13 @@ os.environ.setdefault('CONTACT_EMAIL', 'test@example.com')
 os.environ.setdefault('CONTACT_NUMBER', '555-555-5555')
 os.environ.setdefault('EMAIL_HOST_USER', 'test@example.com')
 
-from app import app, ContactForm
+from opentelemetry import trace
+from opentelemetry.sdk.trace.export import SimpleSpanProcessor
+from opentelemetry.sdk.trace.export.in_memory_span_exporter import (
+    InMemorySpanExporter,
+)
+
+from app import app, ContactForm, rename_unrouted_span
 
 class FlaskAppTestCase(unittest.TestCase):
     def setUp(self):
@@ -182,6 +188,86 @@ class ContactFormTestCase(unittest.TestCase):
             'email': 'test@example.com'
         }, meta={'csrf': False})
         self.assertIsNone(form.message.data)
+
+
+class UnroutedSpanNamingTestCase(unittest.TestCase):
+    """Span names for unmatched routes must not carry the request path.
+
+    The Flask instrumentation falls back to the raw path when no route
+    matches, so scanner traffic against a public site produces unbounded
+    span names, which become unbounded spanmetrics series downstream.
+
+    These assert on spans captured from the real tracer provider rather
+    than on a patched trace.get_current_span. The instrumentation calls
+    get_current_span itself to find the parent, so patching it globally
+    makes the server span fail to start and the test passes or fails
+    depending on suite ordering rather than on the code under test.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        # The app sets the global provider at import; add a second,
+        # synchronous processor to it so spans are readable immediately
+        # instead of on the BatchSpanProcessor's flush interval.
+        cls.exporter = InMemorySpanExporter()
+        trace.get_tracer_provider().add_span_processor(
+            SimpleSpanProcessor(cls.exporter)
+        )
+
+    def setUp(self):
+        app.config['TESTING'] = True
+        app.config['WTF_CSRF_ENABLED'] = False
+        self.client = app.test_client()
+        self.exporter.clear()
+
+    def _server_span(self):
+        """The single span produced by one request through the test client."""
+        spans = self.exporter.get_finished_spans()
+        self.assertEqual(len(spans), 1, f'expected 1 span, got {len(spans)}')
+        return spans[0]
+
+    def test_unrouted_request_collapses_span_name(self):
+        """A 404 is renamed to the constant and keeps the path as an attribute"""
+        response = self.client.get('/.aws/credentials')
+        # after_request must actually run for 404s, otherwise the rename
+        # never happens and the whole fix is inert.
+        self.assertEqual(response.status_code, 404)
+        span = self._server_span()
+        self.assertEqual(span.name, 'HTTP GET <unrouted>')
+        self.assertEqual(
+            span.attributes['http.unrouted_target'], '/.aws/credentials'
+        )
+
+    def test_unrouted_requests_share_one_span_name(self):
+        """Distinct probe paths must collapse to the same name, not N names"""
+        for path in ('/.env', '/.git/config', '/wp-admin/setup-config.php'):
+            self.client.get(path)
+        names = {span.name for span in self.exporter.get_finished_spans()}
+        self.assertEqual(names, {'HTTP GET <unrouted>'})
+
+    def test_unrouted_span_name_tracks_method(self):
+        """The method stays in the name; it is bounded, unlike the path"""
+        self.client.post('/.aws/credentials')
+        self.assertEqual(self._server_span().name, 'HTTP POST <unrouted>')
+
+    def test_routed_request_keeps_instrumentation_span_name(self):
+        """A matched route must keep the name the instrumentation gave it"""
+        response = self.client.get('/health')
+        self.assertEqual(response.status_code, 200)
+        span = self._server_span()
+        self.assertNotEqual(span.name, 'HTTP GET <unrouted>')
+        self.assertNotIn('http.unrouted_target', span.attributes)
+
+    def test_non_recording_span_is_left_alone(self):
+        """No recording span in flight is not an error"""
+        span = MagicMock()
+        span.is_recording.return_value = False
+        response = MagicMock()
+        with app.test_request_context('/.aws/credentials'):
+            with patch('app.trace.get_current_span', return_value=span):
+                self.assertIs(rename_unrouted_span(response), response)
+        span.update_name.assert_not_called()
+        span.set_attribute.assert_not_called()
 
 
 if __name__ == '__main__':

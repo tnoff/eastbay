@@ -215,6 +215,38 @@ def message_successful():
 def health():
     return 'OK', 200
 
+# Span naming for unrouted requests
+#
+# opentelemetry-instrumentation-flask names a server span after the matched
+# Werkzeug rule, and falls back to the raw request path when nothing matches.
+# This site is on the public internet, so every vulnerability scanner probing
+# /.aws/credentials, /.claude/settings.json, /..\..\..\var/log/apache2/access.log
+# and so on minted a brand new span name — 2,117 distinct ones by 2026-08-16,
+# against 4 real routes.
+#
+# That is not just noise in Tempo. The collector's spanmetrics connector turns
+# every distinct span name into a permanent traces_span_metrics_* series, and
+# on 2026-08-16 the accumulated set grew past what Mimir accepts in a single
+# request (50,713 items against an ingestion-burst-size of 50,000). Every
+# metrics export was then rejected in full and retried forever, and the whole
+# cluster's metrics pipeline went down with it.
+#
+# Collapsing unmatched requests to one constant name bounds the dimension at
+# its source. The path is preserved as a span attribute, so individual probes
+# are still greppable in Tempo — attributes are not spanmetrics dimensions
+# unless explicitly listed, so this costs no series.
+UNROUTED_SPAN_NAME = 'HTTP {method} <unrouted>'
+
+@app.after_request
+def rename_unrouted_span(response):
+    """Collapse span names for requests that matched no route."""
+    if request.url_rule is None:
+        span = trace.get_current_span()
+        if span.is_recording():
+            span.update_name(UNROUTED_SPAN_NAME.format(method=request.method))
+            span.set_attribute('http.unrouted_target', request.path)
+    return response
+
 # Error handlers
 @app.errorhandler(403)
 def forbidden(e):
