@@ -251,8 +251,13 @@ class UnroutedSpanNamingTestCase(unittest.TestCase):
         self.assertEqual(self._server_span().name, 'HTTP POST <unrouted>')
 
     def test_routed_request_keeps_instrumentation_span_name(self):
-        """A matched route must keep the name the instrumentation gave it"""
-        response = self.client.get('/health')
+        """A matched route must keep the name the instrumentation gave it
+
+        Uses / rather than /health: /health is excluded from tracing
+        entirely (see ExcludedUrlsTestCase), so it produces no span to
+        assert a name on.
+        """
+        response = self.client.get('/')
         self.assertEqual(response.status_code, 200)
         span = self._server_span()
         self.assertNotEqual(span.name, 'HTTP GET <unrouted>')
@@ -268,6 +273,54 @@ class UnroutedSpanNamingTestCase(unittest.TestCase):
                 self.assertIs(rename_unrouted_span(response), response)
         span.update_name.assert_not_called()
         span.set_attribute.assert_not_called()
+
+
+class ExcludedUrlsTestCase(unittest.TestCase):
+    """/health must serve normally but produce no span at all.
+
+    The kubelet probes it every few seconds and nothing else calls it, so
+    at ~330 probes per real page view it was the site's entire trace
+    output. Asserting on spans from the real provider, for the same
+    reason UnroutedSpanNamingTestCase does.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        cls.exporter = InMemorySpanExporter()
+        trace.get_tracer_provider().add_span_processor(
+            SimpleSpanProcessor(cls.exporter)
+        )
+
+    def setUp(self):
+        app.config['TESTING'] = True
+        app.config['WTF_CSRF_ENABLED'] = False
+        self.client = app.test_client()
+        self.exporter.clear()
+
+    def test_health_still_serves(self):
+        """Excluding it from tracing must not affect the response"""
+        response = self.client.get('/health')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data, b'OK')
+
+    def test_health_produces_no_span(self):
+        """The probe endpoint is not traced"""
+        self.client.get('/health')
+        self.assertEqual(self.exporter.get_finished_spans(), ())
+
+    def test_other_routes_are_still_traced(self):
+        """The exclusion must not disable tracing generally"""
+        self.client.get('/')
+        self.assertEqual(len(self.exporter.get_finished_spans()), 1)
+
+    def test_pattern_is_anchored_to_the_end(self):
+        """A path that merely starts with /health stays traced
+
+        EXCLUDED_URLS ends in $ precisely so a future /health-tips page
+        is not silently untraceable.
+        """
+        self.client.get('/health-tips')
+        self.assertEqual(len(self.exporter.get_finished_spans()), 1)
 
 
 if __name__ == '__main__':

@@ -61,6 +61,22 @@ this generates warning logs; if you want them silent, set
 `OTEL_SDK_DISABLED=true`. Don't add an in-code gate to disable OTel
 based on env — the SDK already has one.
 
+### `/health` is excluded from tracing
+
+`EXCLUDED_URLS` is passed to `FlaskInstrumentor().instrument_app`, and
+currently holds one anchored pattern: `/health$`. The kubelet probes
+that endpoint every few seconds and nothing else calls it — roughly 330
+probes for every real page view — so tracing it meant this site's entire
+span output was probes, each landing as its own single-span trace.
+
+The `$` is load-bearing: `excluded_urls` patterns are `re.search`ed
+against the full request URL, so an unanchored `/health` would also
+silently untrace a future `/health-tips` page. There is a test for
+exactly that.
+
+To exclude another path, add it to the same comma-separated string —
+don't call `instrument_app` twice.
+
 ### `phonenumbers` validation, not WTForms
 
 Phone numbers are validated by calling `phonenumbers.parse(..., 'US')`

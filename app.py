@@ -23,11 +23,24 @@ from opentelemetry.exporter.otlp.proto.grpc._log_exporter import OTLPLogExporter
 from opentelemetry.instrumentation.flask import FlaskInstrumentor
 
 # Setup OpenTelemetry
+# Requests that are not worth a trace, as a comma-separated list of regexes
+# matched (re.search) against the full request URL.
+#
+# /health is hit by the kubelet's readiness and liveness probes and by nothing
+# else. Measured 2026-08-22: 0.28 spans/s, which was 3% of everything reaching
+# Tempo cluster-wide, against real user traffic on this site of 0.0008 spans/s
+# — roughly 330 probes for every genuine page view. Every one landed as its own
+# single-span trace nobody will ever open.
+#
+# Anchored with $ so it cannot swallow a real route that merely contains the
+# word (a future /health-tips page stays traced).
+EXCLUDED_URLS = '/health$'
+
 def setup_otel(app):
     trace.set_tracer_provider(TracerProvider())
     span_processor = BatchSpanProcessor(OTLPSpanExporter())
     trace.get_tracer_provider().add_span_processor(span_processor)
-    FlaskInstrumentor().instrument_app(app)
+    FlaskInstrumentor().instrument_app(app, excluded_urls=EXCLUDED_URLS)
 
     logger_provider = LoggerProvider()
     set_logger_provider(logger_provider)

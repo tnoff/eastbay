@@ -1,0 +1,1 @@
+Requests to `/health` are no longer traced. The endpoint is called by the kubelet's readiness and liveness probes and by nothing else, at roughly 330 probes for every real page view, so every trace this site produced was a probe landing as its own single-span trace. Other routes, including unmatched ones, are traced exactly as before.
