@@ -1,0 +1,41 @@
+# Backstage catalog descriptor. Discovered automatically -- the portal's GitHub
+# provider reads catalog-info.yaml from the default branch of every repo the
+# tnoff-backstage App can see, so this file is the whole of onboarding. Nothing
+# needs registering by hand.
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: eastbay
+  description: >-
+    Flask app serving eastbaymassageandlymph.com. Mostly static HTML with a
+    server-side contact form that emails inbound enquiries to the business
+    owner. Runs in the `eastbay` namespace as OTEL service `eastbay-website`.
+  annotations:
+    # github, not gitlab. This repo is GitHub-canonical; the project spec's
+    # annotation list predates the CI migration and still said
+    # gitlab.com/project-slug.
+    github.com/project-slug: tnoff/eastbay
+    #
+    # Deliberately absent, each for a checked reason rather than an oversight.
+    # Same three as personal-website's descriptor, and for the same reasons:
+    #
+    #   backstage.io/techdocs-ref
+    #     No mkdocs.yml, no docs/. Writing it would advertise a Docs tab with
+    #     nothing behind it. Arrives with TechDocs in phase 3.
+    #
+    #   backstage.io/kubernetes-label-selector
+    #     `app=website` is NOT unique -- this Deployment and personal-website's
+    #     share it, in different namespaces, and Backstage has no
+    #     kubernetes-namespace annotation to disambiguate with. A bare selector
+    #     would cross-wire the two components' pods. The fix is
+    #     backstage.io/kubernetes-id plus a matching label on both Deployments,
+    #     in the change that installs the Kubernetes plugin.
+    #
+    #   grafana/dashboard-selector, grafana/alert-label-selector
+    #     Nothing to select yet. `eastbay-website` appears in
+    #     monitoring/grafana/dashboards.yaml only as a template-variable value,
+    #     not as a dashboard tag, and no alert rule carries it as a label.
+spec:
+  type: website
+  owner: group:default/admin
+  lifecycle: production
