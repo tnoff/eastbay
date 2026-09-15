@@ -46,3 +46,29 @@ spec:
   type: website
   owner: group:default/admin
   lifecycle: production
+  dependsOn:
+    - resource:default/eastbay-cert
+---
+# The TLS certificate this site is served over.
+#
+# Declared here rather than in docker-apps, where apps/eastbay/certificate.yaml
+# applies it. Same rule as discord-postgres and backstage-postgres: a resource sits
+# with the thing it serves, and that is also what lets the dependsOn above live in
+# the one file that can express it.
+#
+# The entity name is NOT the Kubernetes object name. Both websites call their
+# Certificate `website-cert`, in different namespaces -- a third instance of the
+# `app: website` collision, and entityRefs have no namespace to disambiguate with,
+# so two `website-cert` Resources would make the catalog reject one. Named for the
+# site instead; the k8s object name is recorded here rather than in the entity name.
+apiVersion: backstage.io/v1alpha1
+kind: Resource
+metadata:
+  name: eastbay-cert
+  description: >-
+    cert-manager Certificate for `eastbaymassageandlymph.com`, issued into the `eastbay` namespace as the
+    `website-cert` Secret. One site, one certificate -- unlike the mirror fleet, where three
+    Components share one.
+spec:
+  type: certificate
+  owner: group:default/admin
