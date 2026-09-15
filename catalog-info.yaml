@@ -46,6 +46,10 @@ spec:
   type: website
   owner: group:default/admin
   lifecycle: production
+  # The System is declared in docker-apps alongside this site's certificate, and is
+  # named for the SITE rather than this repo -- a System called `eastbay` would
+  # collide with this Component. Same shape as magic-mirror / magic-mirror-docker.
+  system: eastbay-massage
   # The certificate is declared in docker-apps, not here, and the edge is the
   # reason this file still mentions it: only the pointing entity's descriptor can
   # say what it points at. That is the split -- the service definition stays with
