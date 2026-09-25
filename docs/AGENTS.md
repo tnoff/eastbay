@@ -1,7 +1,7 @@
 # AGENTS.md
 
 Guidance for AI coding agents working in this repository. For an
-overview of the site, env-var schema, and routes see [README.md](README.md);
+overview of the site, env-var schema, and routes see [README.md](../README.md);
 for local setup, tests, and Docker build see [DEVELOPMENT.md](DEVELOPMENT.md).
 
 ## What this is
@@ -22,7 +22,13 @@ blueprint structure; if you need to add a route, add it to `app.py`.
 ├── Dockerfile         # python:3.14-slim-bookworm
 ├── docker-compose.yml # Local dev convenience
 ├── requirements.txt
-└── VERSION            # source of truth for release tagging
+├── VERSION            # source of truth for release tagging
+├── mkdocs.yml          # Backstage TechDocs site config
+└── docs/
+    ├── README.md       # Symlink to ../README.md (single copy for GitHub + TechDocs)
+    ├── DEVELOPMENT.md  # Local setup, tests, CI
+    ├── AGENTS.md       # This file
+    └── CONTRIBUTING.md # Canonical-remote statement
 ```
 
 ## Non-obvious internals
@@ -109,6 +115,6 @@ Don't switch to stdout-only without also stripping the file handler.
 - New routes go in `app.py` next to the existing handlers, not in a
   separate module.
 - New env vars get a default in `Config` and a row in
-  [README.md](README.md#configuration).
+  [README.md](../README.md#configuration).
 - New tests go in `test_app.py` mirroring the existing
   `FlaskAppTestCase` / `ContactFormTestCase` split.

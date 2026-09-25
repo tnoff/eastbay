@@ -10,8 +10,8 @@ metadata:
     Flask app serving eastbaymassageandlymph.com. Mostly static HTML with a
     server-side contact form that emails inbound enquiries to the business
     owner. Runs in the `eastbay` namespace as OTEL service `eastbay-website`.
-  #
-  # No annotations, and that is deliberate in two different ways.
+  annotations:
+    backstage.io/techdocs-ref: dir:.
   #
   # github.com/project-slug is DERIVED, not written here. The portal registers
   # AnnotateScmSlugEntityProcessor, which reads the slug off the location this
@@ -20,12 +20,8 @@ metadata:
   # `gitlab.com/project-slug` left in the project spec after the GitHub
   # migration is the exact failure that motivated deriving it.
   #
-  # The rest are absent for checked reasons rather than oversight:
-  #
-  #   backstage.io/techdocs-ref
-  #     No mkdocs.yml, no docs/. The annotation asserts documentation exists at
-  #     a path, so writing it now advertises a Docs tab with nothing behind it.
-  #     Arrives in phase 3 with the mkdocs.yml it points at.
+  # techdocs-ref arrives below now that mkdocs.yml + docs/ exist (phase 3).
+  # The rest are still absent for checked reasons rather than oversight:
   #
   #   backstage.io/kubernetes-label-selector
   #     `app=website` is NOT unique. docker-apps runs this Deployment and
@@ -62,3 +58,4 @@ spec:
   # infrastructure this repo does not own.
   dependsOn:
     - resource:default/eastbay-cert
+    - component:default/github-workflows

@@ -5,7 +5,7 @@ Flask application serving [eastbaymassageandlymph.com](https://eastbaymassageand
 messages to the business owner.
 
 Runs in Docker on OKE. CI builds and pushes the image via the shared
-templates in `tnoff-projects/github-workflows`; the SHA pin in
+templates in `tnoff/github-workflows`; the SHA pin in
 `tnoff-projects/docker-apps` is bumped automatically after each push.
 
 ## Site features
@@ -34,6 +34,7 @@ The app reads everything from environment variables.
 | `EMAIL_HOST` | no | Gmail SMTP | SMTP server hostname |
 | `EMAIL_PORT` | no | Gmail SMTP | SMTP server port |
 | `OTEL_EXPORTER_OTLP_ENDPOINT` | no | (sdk default) | OTel collector endpoint. The deployment manifest in `docker-apps` sets this to the in-cluster collector. |
+| `LOG_FILE` | no | (auto-detected) | Override the log file path; otherwise `website.log` in dev, `/var/log/website/website.log` in prod |
 
 ## URL routes
 
@@ -42,10 +43,11 @@ The app reads everything from environment variables.
 | GET | `/` | Home page with the contact form |
 | POST | `/send_message/` | Submit contact form |
 | GET | `/message_successful/` | Submission confirmation |
+| GET | `/health` | Liveness/readiness probe target (excluded from tracing) |
 
 ## Running
 
-For local dev, build, and tests see [DEVELOPMENT.md](DEVELOPMENT.md).
+For local dev, build, and tests see [DEVELOPMENT.md](docs/DEVELOPMENT.md).
 
 The production container's entrypoint is `startup.sh`, which runs
 `gunicorn --bind 0.0.0.0:8000 --workers 4 app:app`.
@@ -64,4 +66,4 @@ CI in this repo builds the image, pushes to OCIR with a `:<short-sha>`
 tag, and triggers a downstream pipeline that opens an MR in
 `docker-apps` to bump the pinned SHA.
 
-See [AGENTS.md](AGENTS.md) for non-obvious code internals.
+See [AGENTS.md](docs/AGENTS.md) for non-obvious code internals.

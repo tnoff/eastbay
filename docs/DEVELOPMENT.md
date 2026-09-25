@@ -1,7 +1,7 @@
 # Development
 
 Local dev setup, tests, and Docker build. User-facing description of
-the site and its env-var schema live in [README.md](README.md); for
+the site and its env-var schema live in [README.md](../README.md); for
 non-obvious code internals see [AGENTS.md](AGENTS.md).
 
 ## Prerequisites
@@ -81,17 +81,24 @@ workers on port 8000.
 
 ## CI / release
 
-CI is GitLab CI. `.gitlab-ci.yml` pulls templates from
-`tnoff-projects/github-workflows`:
+CI is GitHub Actions, pulling shared templates from
+`tnoff/github-workflows`:
 
-- `buildkit-build-check.yml` — MR-time Dockerfile build check
-- `buildkit-docker-push.yml` — build + push on default branch
-- `trigger-bump.yml` — open an MR in `docker-apps` to bump the SHA pin
-- `trufflehog.yml`, `trufflehog-image.yml` — secret scans
-- `tag.yml`, `bump-version.yml` — tag from `VERSION` and bump on the
-  default branch
-- `renovate.yml` — scheduled dependency updates
-- `discord-notify.yml` — failure notifications
+- `ci.yml` (PRs): `trufflehog.yml` (secret scan), `spellcheck.yml`,
+  `docker-build-check.yml` (Dockerfile build check + image secret scan
+  in one job, conditional on image-input files changing), `bump-version.yml`
+  (on `renovate/dev-*` PRs), `check-workflow-contracts.yml`
+- `release.yml` (push to `main`): `assemble-changelog.yml`, `tag.yml`,
+  `docker-push.yml` (build + push, conditional on image-input files
+  changing), `trigger-bump-dispatch.yml` (opens a PR in `docker-apps`
+  to bump the pinned SHA)
+- `scheduled.yml`: `renovate.yml`, `branch-cleanup.yml`
+- `notify-failure.yml`: `discord-notify.yml`
+
+There is no release job — the GitLab config this was ported from never
+had one either (`release.yml`'s own comment confirms this). There is
+also no test execution or coverage gate anywhere in CI — `test_app.py`
+only runs locally (see [Tests](#tests) below).
 
 `VERSION` at the repo root is the single source of truth — bump it,
-push, and CI handles tagging + the release.
+push, and CI handles tagging + the image push.
