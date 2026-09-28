@@ -51,8 +51,10 @@ def setup_otel(app):
 
 # Configuration
 class Config:
-    # Secret key for CSRF protection
-    SECRET_KEY_FILE = 'secret_key'
+    # Secret key for CSRF protection. SECRET_KEY_FILE is a path, not a
+    # credential -- the actual value is read from FLASK_SECRET_KEY or that
+    # file below, never hardcoded here.
+    SECRET_KEY_FILE = 'secret_key'  # nosec B105
     SECRET_KEY = os.environ.get('FLASK_SECRET_KEY', None)
 
     if SECRET_KEY is None:
@@ -268,4 +270,6 @@ def forbidden(e):
     return "CSRF token missing or invalid.", 403
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8000, debug=app.config['DEBUG'])
+    # 0.0.0.0 is required, not incidental: this runs inside a container,
+    # where a loopback-only bind would be unreachable from outside it.
+    app.run(host='0.0.0.0', port=8000, debug=app.config['DEBUG'])  # nosec B104
