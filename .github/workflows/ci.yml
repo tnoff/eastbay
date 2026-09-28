@@ -65,6 +65,12 @@ jobs:
     if: needs.metadata.outputs.only != 'true'
     uses: tnoff/github-workflows/.github/workflows/trufflehog.yml@dddd091a6a69e8bf070f63863d59c04bb4a5db63
 
+  pre-commit:
+    name: pre-commit
+    needs: metadata
+    if: needs.metadata.outputs.only != 'true'
+    uses: tnoff/github-workflows/.github/workflows/pre-commit.yml@dddd091a6a69e8bf070f63863d59c04bb4a5db63
+
   spellcheck:
     name: Spellcheck
     needs: metadata
@@ -165,7 +171,7 @@ jobs:
     # This job always runs and its name never changes, so the ruleset requires
     # exactly one context and the jobs underneath stay free to change.
     if: always()
-    needs: [secrets, spellcheck, changes, build, contracts, metadata]
+    needs: [secrets, pre-commit, spellcheck, changes, build, contracts, metadata]
     runs-on: ubuntu-26.04
     permissions:
       contents: read
@@ -174,6 +180,7 @@ jobs:
         run: |
           echo "secrets:    ${{ needs.secrets.result }}"
           echo "metadata:  ${{ needs.metadata.result }}"
+          echo "pre-commit: ${{ needs['pre-commit'].result }}"
           echo "spellcheck: ${{ needs.spellcheck.result }}"
           echo "changes:    ${{ needs.changes.result }}"
           echo "build:      ${{ needs.build.result }}"
@@ -184,6 +191,7 @@ jobs:
         # PR skips the cascade, which is the intended outcome, not a failure.
         if: >-
           needs.secrets.result == 'failure' || needs.secrets.result == 'cancelled' ||
+          needs['pre-commit'].result == 'failure' || needs['pre-commit'].result == 'cancelled' ||
           needs.spellcheck.result == 'failure' || needs.spellcheck.result == 'cancelled' ||
           needs.changes.result == 'failure' || needs.changes.result == 'cancelled' ||
           needs.build.result == 'failure' || needs.build.result == 'cancelled' ||
