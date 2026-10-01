@@ -59,3 +59,5 @@ spec:
   dependsOn:
     - resource:default/eastbay-cert
     - component:default/github-workflows
+  consumesApis:
+    - api:default/image-bump
