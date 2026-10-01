@@ -1,7 +1,7 @@
 # Development
 
 Local dev setup, tests, and Docker build. User-facing description of
-the site and its env-var schema live in [README.md](../README.md); for
+the site and its env-var schema live in [README.md](README.md); for
 non-obvious code internals see [AGENTS.md](AGENTS.md).
 
 ## Prerequisites
@@ -81,24 +81,25 @@ workers on port 8000.
 
 ## CI / release
 
-CI is GitHub Actions, pulling shared templates from
-`tnoff/github-workflows`:
+CI is GitHub Actions, calling reusable workflows from
+`tnoff/github-workflows` (pinned by SHA):
 
-- `ci.yml` (PRs): `trufflehog.yml` (secret scan), `spellcheck.yml`,
-  `docker-build-check.yml` (Dockerfile build check + image secret scan
-  in one job, conditional on image-input files changing), `bump-version.yml`
-  (on `renovate/dev-*` PRs), `check-workflow-contracts.yml`
+- `ci.yml` (PRs): `trufflehog.yml` (secret scan), `pre-commit.yml`
+  (bandit), `spellcheck.yml`, `docker-build-check.yml` (image build +
+  image secret scan, only when image-input files changed),
+  `bump-version.yml` (on `renovate/dev-*` PRs),
+  `check-workflow-contracts.yml`. The `CI result` job aggregates them and is
+  the one required check.
 - `release.yml` (push to `main`): `assemble-changelog.yml`, `tag.yml`,
-  `docker-push.yml` (build + push, conditional on image-input files
-  changing), `trigger-bump-dispatch.yml` (opens a PR in `docker-apps`
-  to bump the pinned SHA)
+  `docker-push.yml` (only when image-input files changed), then
+  `trigger-bump-dispatch.yml`, which sends a `repository_dispatch` to
+  docker-apps to open the image-pin bump PR.
 - `scheduled.yml`: `renovate.yml`, `branch-cleanup.yml`
 - `notify-failure.yml`: `discord-notify.yml`
+- `techdocs-publish.yml`: publishes this site to Backstage TechDocs when
+  `docs/**`, `mkdocs.yml` or `catalog-info.yaml` change.
 
-There is no release job — the GitLab config this was ported from never
-had one either (`release.yml`'s own comment confirms this). There is
-also no test execution or coverage gate anywhere in CI — `test_app.py`
-only runs locally (see [Tests](#tests) below).
+There is no test execution or coverage gate in CI; `test_app.py` only runs
+locally (see [Tests](#tests)).
 
-`VERSION` at the repo root is the single source of truth — bump it,
-push, and CI handles tagging + the image push.
+`VERSION` at the repo root is the single source of truth for tagging.
