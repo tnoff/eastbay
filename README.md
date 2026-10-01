@@ -4,9 +4,9 @@ Flask application serving [eastbaymassageandlymph.com](https://eastbaymassageand
 — mostly static HTML with a server-side contact form that emails inbound
 messages to the business owner.
 
-Runs in Docker on OKE. CI builds and pushes the image via the shared
-templates in `tnoff/github-workflows`; the SHA pin in
-`tnoff-projects/docker-apps` is bumped automatically after each push.
+Runs in Docker on OKE. GitHub Actions builds and pushes the image via the
+shared workflows in `tnoff/github-workflows`; the SHA pin in
+`tnoff/docker-apps` is bumped automatically after each push.
 
 ## Site features
 
@@ -47,7 +47,7 @@ The app reads everything from environment variables.
 
 ## Running
 
-For local dev, build, and tests see [DEVELOPMENT.md](docs/DEVELOPMENT.md).
+For local dev, build, and tests see [DEVELOPMENT.md](https://github.com/tnoff/eastbay/blob/main/docs/DEVELOPMENT.md).
 
 The production container's entrypoint is `startup.sh`, which runs
 `gunicorn --bind 0.0.0.0:8000 --workers 4 app:app`.
@@ -60,10 +60,15 @@ The production container's entrypoint is `startup.sh`, which runs
 
 ## Deployment
 
-The Kubernetes manifest lives in
-[`tnoff-projects/docker-apps/apps/eastbaymassage/`](https://gitlab.com/tnoff-projects/docker-apps/-/tree/main/apps/eastbaymassage).
-CI in this repo builds the image, pushes to OCIR with a `:<short-sha>`
-tag, and triggers a downstream pipeline that opens an MR in
-`docker-apps` to bump the pinned SHA.
+The Kubernetes manifests live in
+[`tnoff/docker-apps/apps/eastbaymassage/`](https://github.com/tnoff/docker-apps/tree/main/apps/eastbaymassage).
+On each merge to `main` that touches an image input, CI pushes the image
+to OCIR with a short-SHA tag and sends a `repository_dispatch`
+(`bump_source: eastbay`) to docker-apps, whose `bump-image-pin.yml` opens
+the PR that bumps the pinned tag.
 
-See [AGENTS.md](docs/AGENTS.md) for non-obvious code internals.
+The SMTP credentials, contact details and Flask secret key come from the
+terraform-managed Secret `eastbay-website-creds` (loaded via `envFrom`); the
+Deployment rolls automatically when it rotates.
+
+See [AGENTS.md](https://github.com/tnoff/eastbay/blob/main/docs/AGENTS.md) for non-obvious code internals.

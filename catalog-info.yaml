@@ -9,7 +9,7 @@ metadata:
   description: >-
     Flask app serving eastbaymassageandlymph.com. Mostly static HTML with a
     server-side contact form that emails inbound enquiries to the business
-    owner. Runs in the `eastbay` namespace as OTEL service `eastbay-website`.
+    owner. Runs in the `eastbay` namespace as OTEL service `eastbay`.
   annotations:
     backstage.io/techdocs-ref: dir:.
   #
