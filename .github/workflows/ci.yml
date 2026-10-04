@@ -63,19 +63,19 @@ jobs:
     name: Scan for secrets
     needs: metadata
     if: needs.metadata.outputs.only != 'true'
-    uses: tnoff/github-workflows/.github/workflows/trufflehog.yml@dddd091a6a69e8bf070f63863d59c04bb4a5db63
+    uses: tnoff/github-workflows/.github/workflows/trufflehog.yml@adea087c43d56fd13d5b1abf2d5f2ba3e695784d  # trufflehog-v1.0.0
 
   pre-commit:
     name: pre-commit
     needs: metadata
     if: needs.metadata.outputs.only != 'true'
-    uses: tnoff/github-workflows/.github/workflows/pre-commit.yml@dddd091a6a69e8bf070f63863d59c04bb4a5db63
+    uses: tnoff/github-workflows/.github/workflows/pre-commit.yml@adea087c43d56fd13d5b1abf2d5f2ba3e695784d  # pre-commit-v1.0.0
 
   spellcheck:
     name: Spellcheck
     needs: metadata
     if: needs.metadata.outputs.only != 'true'
-    uses: tnoff/github-workflows/.github/workflows/spellcheck.yml@dddd091a6a69e8bf070f63863d59c04bb4a5db63
+    uses: tnoff/github-workflows/.github/workflows/spellcheck.yml@adea087c43d56fd13d5b1abf2d5f2ba3e695784d  # spellcheck-v1.0.0
     with:
       name: html
 
@@ -130,14 +130,14 @@ jobs:
     name: Build and scan image
     needs: changes
     if: needs.changes.outputs.image == 'true'
-    uses: tnoff/github-workflows/.github/workflows/docker-build-check.yml@dddd091a6a69e8bf070f63863d59c04bb4a5db63
+    uses: tnoff/github-workflows/.github/workflows/docker-build-check.yml@adea087c43d56fd13d5b1abf2d5f2ba3e695784d  # docker-build-check-v1.0.0
 
   bump-version:
     name: Bump version
     if: startsWith(github.head_ref, 'renovate/dev-')
     permissions:
       contents: write
-    uses: tnoff/github-workflows/.github/workflows/bump-version.yml@dddd091a6a69e8bf070f63863d59c04bb4a5db63
+    uses: tnoff/github-workflows/.github/workflows/bump-version.yml@adea087c43d56fd13d5b1abf2d5f2ba3e695784d  # bump-version-v1.0.0
     with:
       bump_changelog: true
     secrets:
@@ -153,7 +153,7 @@ jobs:
     name: Workflow contracts
     needs: metadata
     if: needs.metadata.outputs.only != 'true'
-    uses: tnoff/github-workflows/.github/workflows/check-workflow-contracts.yml@dddd091a6a69e8bf070f63863d59c04bb4a5db63
+    uses: tnoff/github-workflows/.github/workflows/check-workflow-contracts.yml@adea087c43d56fd13d5b1abf2d5f2ba3e695784d  # check-workflow-contracts-v1.0.0
 
   result:
     name: CI result
