@@ -91,7 +91,8 @@ CI is GitHub Actions, calling reusable workflows from
   `check-workflow-contracts.yml`. The `CI result` job aggregates them and is
   the one required check.
 - `release.yml` (push to `main`): `assemble-changelog.yml`, `tag.yml`,
-  `docker-push.yml` (only when image-input files changed), then
+  `docker-push-oidc.yml` (only when image-input files changed; logs in with the job's
+  GitHub OIDC identity, no stored OCIR credential), then
   `trigger-bump-dispatch.yml`, which sends a `repository_dispatch` to
   docker-apps to open the image-pin bump PR.
 - `scheduled.yml`: `renovate.yml`, `branch-cleanup.yml`
