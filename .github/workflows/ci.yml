@@ -69,7 +69,7 @@ jobs:
     name: pre-commit
     needs: metadata
     if: needs.metadata.outputs.only != 'true'
-    uses: tnoff/github-workflows/.github/workflows/pre-commit.yml@adea087c43d56fd13d5b1abf2d5f2ba3e695784d  # pre-commit-v1.0.0
+    uses: tnoff/github-workflows/.github/workflows/pre-commit.yml@932945598281d1716c7cdca47df80747711eafb0  # pre-commit-v1.0.1
 
   spellcheck:
     name: Spellcheck
