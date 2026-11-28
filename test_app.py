@@ -323,5 +323,68 @@ class ExcludedUrlsTestCase(unittest.TestCase):
         self.assertEqual(len(self.exporter.get_finished_spans()), 1)
 
 
+class SmokeTestEmailTestCase(unittest.TestCase):
+    """The smoke test's sender address is accepted but never emailed, and is announced in a header"""
+
+    MARKER = 'smoke-test@example.com'
+
+    def setUp(self):
+        app.config['TESTING'] = True
+        app.config['WTF_CSRF_ENABLED'] = False
+        app.config['EMAIL_ENABLED'] = True
+        app.config['EMAIL_HOST_PASSWORD'] = 'test_password'
+        app.config['SMOKE_TEST_EMAIL'] = self.MARKER
+        self.client = app.test_client()
+
+    def tearDown(self):
+        app.config['SMOKE_TEST_EMAIL'] = None
+        app.config['EMAIL_ENABLED'] = False
+
+    def _submit(self, email):
+        return self.client.post('/send_message/', data={
+            'name': 'Smoke Test', 'email': email, 'phone_number': '',
+            'message': 'Smoke test'}, follow_redirects=False)
+
+    @patch('app.smtplib.SMTP')
+    def test_smoke_address_succeeds_without_sending(self, mock_smtp):
+        """Same redirect as a real submission, and SMTP is never opened"""
+        response = self._submit(self.MARKER)
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(response.headers['Location'].endswith('/message_successful/'))
+        mock_smtp.assert_not_called()
+
+    @patch('app.smtplib.SMTP')
+    def test_smoke_address_match_ignores_case_and_whitespace(self, mock_smtp):
+        """A mail client or a browser may change case; it must still be the smoke address"""
+        self._submit('  Smoke-Test@Example.COM ')
+        mock_smtp.assert_not_called()
+
+    @patch('app.smtplib.SMTP')
+    def test_any_other_address_still_sends(self, mock_smtp):
+        """Only the exact address is special: a similar one is a real enquiry"""
+        mock_server = MagicMock()
+        mock_smtp.return_value.__enter__.return_value = mock_server
+        for email in ('smoke-test@example.org', 'xsmoke-test@example.com', 'real@example.com'):
+            mock_server.send_message.reset_mock()
+            self._submit(email)
+            mock_server.send_message.assert_called_once()
+
+    @patch('app.smtplib.SMTP')
+    def test_unset_means_the_smoke_address_is_just_an_address(self, mock_smtp):
+        """With the setting off nothing is skipped, so a deploy without it sends the email"""
+        app.config['SMOKE_TEST_EMAIL'] = None
+        mock_smtp.return_value.__enter__.return_value = MagicMock()
+        self._submit(self.MARKER)
+        mock_smtp.assert_called_once()
+
+    def test_header_announces_the_address(self):
+        """The smoke test posts only after it sees this, so a deploy without the setting is safe"""
+        self.assertEqual(self.client.get('/health').headers['X-Smoke-Test-Email'], self.MARKER)
+
+    def test_header_absent_when_unset(self):
+        app.config['SMOKE_TEST_EMAIL'] = None
+        self.assertNotIn('X-Smoke-Test-Email', self.client.get('/health').headers)
+
+
 if __name__ == '__main__':
     unittest.main()

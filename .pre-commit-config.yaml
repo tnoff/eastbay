@@ -3,4 +3,4 @@ repos:
     rev: '1.9.4'
     hooks:
       - id: bandit
-        exclude: ^test_app\.py$
+        exclude: ^test_(app|smoke)\.py$

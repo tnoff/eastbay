@@ -80,7 +80,7 @@ jobs:
           while IFS= read -r f; do
             [ -n "$f" ] || continue
             case "$f" in
-              Dockerfile|requirements.txt|app.py|startup.sh|templates/*|staticfiles/*)
+              Dockerfile|requirements.txt|app.py|startup.sh|templates/*|staticfiles/*|smoke/*)
                 MATCH=true; break ;;
             esac
           done <<< "${FILES}"
