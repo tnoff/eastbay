@@ -15,6 +15,8 @@ which walks all of it). Same file in both, so the two cannot drift apart.
     --smtp-auth       also log in to the mail server (EMAIL_HOST, EMAIL_PORT, EMAIL_HOST_USER,
                       EMAIL_HOST_PASSWORD from the environment) and quit WITHOUT sending anything,
                       to catch a revoked or expired app password. Only runs where those are set.
+    --smtp-only       just that login, none of the web checks (needs no SMOKE_BASE_URL). For a
+                      slower schedule than the web checks: every 15 minutes is a lot of logins.
 
 THE CONTACT FORM IS SUBMITTED ONLY AFTER THE SERVER HAS SAID IT WILL NOT SEND EMAIL FOR THE SMOKE
 ADDRESS (the X-Smoke-Test-Email response header). Without that, the submission would be a real
@@ -48,10 +50,12 @@ class NoRedirect(urllib.request.HTTPRedirectHandler):
 
 class Smoke:
     def __init__(self, base_url, smoke_email, tries=3, timeout=15):
-        parsed = urllib.parse.urlparse(base_url)
-        if parsed.scheme not in ('http', 'https') or not parsed.netloc:
-            raise ValueError(f'SMOKE_BASE_URL must be an http(s) url, got {base_url!r}')
-        self.base = base_url.rstrip('/')
+        # base_url is None only for --smtp-only, which makes no web requests
+        if base_url is not None:
+            parsed = urllib.parse.urlparse(base_url)
+            if parsed.scheme not in ('http', 'https') or not parsed.netloc:
+                raise ValueError(f'SMOKE_BASE_URL must be an http(s) url, got {base_url!r}')
+        self.base = (base_url or '').rstrip('/')
         self.smoke_email = smoke_email
         self.tries = tries
         self.timeout = timeout
@@ -191,18 +195,24 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__.split('\n', maxsplit=1)[0])
     parser.add_argument('--smtp-auth', action='store_true',
                         help='also log in to the mail server (sends nothing)')
+    parser.add_argument('--smtp-only', action='store_true',
+                        help='only log in to the mail server (sends nothing), no web checks')
     args = parser.parse_args(argv)
 
-    base = os.environ.get('SMOKE_BASE_URL')
-    smoke_email = (os.environ.get('SMOKE_TEST_EMAIL') or '').strip().lower()
-    if not base or not smoke_email:
-        print('SMOKE_BASE_URL and SMOKE_TEST_EMAIL must be set', file=sys.stderr)
-        return 2
-    smoke = Smoke(base, smoke_email, tries=int(os.environ.get('SMOKE_TRIES', '3')),
-                  timeout=int(os.environ.get('SMOKE_TIMEOUT', '15')))
-    smoke.run()
-    if args.smtp_auth:
+    timeout = int(os.environ.get('SMOKE_TIMEOUT', '15'))
+    if args.smtp_only:
+        smoke = Smoke(None, '', timeout=timeout)
         smoke.smtp_auth()
+    else:
+        base = os.environ.get('SMOKE_BASE_URL')
+        smoke_email = (os.environ.get('SMOKE_TEST_EMAIL') or '').strip().lower()
+        if not base or not smoke_email:
+            print('SMOKE_BASE_URL and SMOKE_TEST_EMAIL must be set', file=sys.stderr)
+            return 2
+        smoke = Smoke(base, smoke_email, tries=int(os.environ.get('SMOKE_TRIES', '3')), timeout=timeout)
+        smoke.run()
+        if args.smtp_auth:
+            smoke.smtp_auth()
     print(f'{smoke.passed}/{smoke.total} checks passed')
     return 0 if smoke.passed == smoke.total else 1
 

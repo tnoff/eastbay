@@ -134,6 +134,25 @@ class SmtpAuth(unittest.TestCase):
         self.assertIn('SMTPAuthenticationError', out.getvalue())
         self.assertNotIn('hunter2', out.getvalue())
 
+    @patch('site_smoke.smtplib.SMTP')
+    def test_smtp_only_needs_no_base_url_and_makes_no_web_request(self, mock_smtp):
+        env = {'EMAIL_HOST_USER': 'u@example.com', 'EMAIL_HOST_PASSWORD': 'hunter2'}
+        out = io.StringIO()
+        with patch.dict(os.environ, env, clear=True), contextlib.redirect_stdout(out):
+            code = site_smoke.main(['--smtp-only'])
+        self.assertEqual(code, 0)
+        self.assertEqual(out.getvalue().count('PASS'), 1)
+        self.assertIn('1/1 checks passed', out.getvalue())
+        mock_smtp.return_value.__enter__.return_value.send_message.assert_not_called()
+
+    @patch('site_smoke.smtplib.SMTP')
+    def test_smtp_only_fails_with_exit_1_on_a_bad_login(self, mock_smtp):
+        import smtplib
+        mock_smtp.return_value.__enter__.return_value.login.side_effect = smtplib.SMTPAuthenticationError(535, b'x')
+        env = {'EMAIL_HOST_USER': 'u@example.com', 'EMAIL_HOST_PASSWORD': 'hunter2'}
+        with patch.dict(os.environ, env, clear=True), contextlib.redirect_stdout(io.StringIO()):
+            self.assertEqual(site_smoke.main(['--smtp-only']), 1)
+
     def test_missing_credentials_fail(self):
         smoke = self.smoke()
         with patch.dict(os.environ, {}, clear=True), contextlib.redirect_stdout(io.StringIO()) as out:

@@ -79,14 +79,15 @@ no CSRF token is refused.
 
 `--smtp-auth` logs in to the mail server (`EMAIL_HOST`, `EMAIL_PORT`, `EMAIL_HOST_USER`,
 `EMAIL_HOST_PASSWORD`) and quits without sending, to catch a revoked or expired app password. It runs
-only where the credentials are present, i.e. in the cluster.
+only where the credentials are present, i.e. in the cluster. `--smtp-only` does just that login and none
+of the web checks, so it can run on its own (slower) schedule.
 
 It runs in three places, so a failure says which side of the ingress is broken:
 
 - **In the cluster**: CronJobs and a post-deploy Job in
   [`tnoff/docker-apps`](https://github.com/tnoff/docker-apps/tree/main/apps/eastbaymassage) run it with
-  this image against the `website-svc` Service every 15 minutes, with `--smtp-auth` after each deploy
-  and daily. A pod cannot reach the public URL (ingress-nginx needs PROXY protocol and kube-proxy skips
+  this image against the `website-svc` Service every 15 minutes, and the mail login (`--smtp-only`) after each
+  deploy and daily. A pod cannot reach the public URL (ingress-nginx needs PROXY protocol and kube-proxy skips
   the load balancer), so this covers the site but not DNS, TLS or the ingress.
 - **From GitHub**: `.github/workflows/smoke-public.yml` runs it every 15 minutes against
   `https://eastbaymassageandlymph.com` and checks the certificate has 14 days left. This walks the
