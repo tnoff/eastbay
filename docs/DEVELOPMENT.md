@@ -62,7 +62,21 @@ python -m unittest test_app.FlaskAppTestCase.test_home_page_loads
 - Email delivery (with `smtplib.SMTP` mocked)
 - Per-field validators (`ContactFormTestCase`)
 
+`test_smoke.py` runs `smoke/site_smoke.py` against the real app on a local port (a healthy app passes,
+a server without `SMOKE_TEST_EMAIL` is never posted to, nothing listening fails) and tests `--smtp-auth`
+with `smtplib` mocked. It needs `FLASK_SECRET_KEY` set, like the rest.
+
 There is no coverage gate.
+
+## Smoke test
+
+```bash
+FLASK_SECRET_KEY=dev python -m unittest test_smoke.py
+SMOKE_BASE_URL=http://localhost:8000 SMOKE_TEST_EMAIL=smoke-test@example.com python smoke/site_smoke.py
+```
+
+Run the second against a local app started with `SMOKE_TEST_EMAIL=smoke-test@example.com` and
+`EMAIL_HOST_PASSWORD` unset. It is standard library only on purpose (it runs from the production image).
 
 ## Docker build
 
@@ -90,6 +104,9 @@ CI is GitHub Actions, calling reusable workflows from
   `bump-version.yml` (on `renovate/dev-*` PRs),
   `check-workflow-contracts.yml`. The `CI result` job aggregates them and is
   the one required check.
+- `smoke-public.yml` (every 15 minutes): runs `smoke/site_smoke.py` against
+  https://eastbaymassageandlymph.com from a GitHub runner, checks the certificate, and posts to
+  `#smoke-tests` on failure. See the Smoke test section of [README.md](README.md).
 - `release.yml` (push to `main`): `assemble-changelog.yml`, `tag.yml`,
   `docker-push-oidc.yml` (only when image-input files changed; logs in with the job's
   GitHub OIDC identity, no stored OCIR credential), then

@@ -11,6 +11,12 @@ COPY staticfiles /opt/web/staticfiles
 COPY startup.sh requirements.txt app.py /opt/web/
 RUN chmod +x /opt/web/startup.sh
 
+# Smoke test, run by the CronJobs and the post-deploy Job in tnoff/docker-apps
+# (apps/eastbaymassage/smoke-*.yaml, smoke/eastbaymassage/) with this image, so the test that runs is
+# always the one written for the site that is deployed. Standard library only.
+COPY smoke/site_smoke.py /usr/local/bin/site-smoke
+RUN chmod 0555 /usr/local/bin/site-smoke
+
 RUN pip install -r /opt/web/requirements.txt
 RUN rm /opt/web/requirements.txt
 

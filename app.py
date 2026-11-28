@@ -87,6 +87,13 @@ class Config:
     EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', None)
     EMAIL_ENABLED = EMAIL_HOST_PASSWORD is not None
 
+    # The sender address the smoke test (smoke/site_smoke.py) submits the contact form with. A
+    # submission from exactly this address is accepted, shown the success page and logged, and NO
+    # email is sent, so the smoke test can exercise the form against production without writing to
+    # the inbox. Unset (the default) turns the behaviour off. It is not a secret: the most anyone can
+    # do with it is have their own submission dropped. Set it to an address nobody can write from.
+    SMOKE_TEST_EMAIL = (os.environ.get('SMOKE_TEST_EMAIL') or '').strip().lower() or None
+
     # Phone number settings
     PHONENUMBER_DEFAULT_REGION = 'US'
 
@@ -157,8 +164,18 @@ class ContactForm(FlaskForm):
         Length(max=30 * 1024)
     ])
 
+def is_smoke_test(email):
+    """True if a submission is the smoke test's, which must never send an email"""
+    marker = app.config.get('SMOKE_TEST_EMAIL')
+    return bool(marker) and (email or '').strip().lower() == marker
+
 # Helper function to send email
 def send_email(name, email, phone_number, message):
+    # Before the EMAIL_ENABLED check, so a smoke test never reaches SMTP in prod
+    if is_smoke_test(email):
+        logger.info('Smoke test submission accepted, no email sent')
+        return
+
     if not app.config['EMAIL_ENABLED']:
         logger.info(f"DEV MODE: Contact form submitted successfully")
         logger.info(f"  Name: {name}")
@@ -229,6 +246,21 @@ def message_successful():
 @app.route('/health')
 def health():
     return 'OK', 200
+
+# The smoke test only submits the form after it has seen the server announce, in this header, the
+# address it will not send email for. If the header is missing (the setting was not deployed, or
+# this code was removed) the smoke test does not submit, because the submission would send a real
+# email to the owner every 15 minutes. The header is on every response so it is the same instance
+# that answers the page that handles the POST.
+SMOKE_HEADER = 'X-Smoke-Test-Email'
+
+@app.after_request
+def announce_smoke_email(response):
+    """Tell the smoke test which sender address this server will not send email for."""
+    marker = app.config.get('SMOKE_TEST_EMAIL')
+    if marker:
+        response.headers[SMOKE_HEADER] = marker
+    return response
 
 # Span naming for unrouted requests
 #

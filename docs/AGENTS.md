@@ -18,6 +18,8 @@ blueprint structure; if you need to add a route, add it to `app.py`.
 ├── templates/         # base.html, home.html, message.html
 ├── staticfiles/       # CSS, JS, images
 ├── test_app.py        # unittest tests
+├── test_smoke.py      # smoke/site_smoke.py against the real app
+├── smoke/site_smoke.py # Smoke test, in the image as /usr/local/bin/site-smoke
 ├── startup.sh         # Container entrypoint (runs gunicorn)
 ├── Dockerfile         # python:3.14-slim-bookworm
 ├── docker-compose.yml # Local dev convenience
@@ -57,6 +59,21 @@ If you ever consolidate the `if EMAIL_HOST_PASSWORD` guard, preserve
 the "log and succeed" behaviour for the unset case. Failing the
 submission silently when the operator forgot to set a password would
 be a worse UX than continuing.
+
+### `SMOKE_TEST_EMAIL` and the `X-Smoke-Test-Email` header exist so a smoke test never emails the owner
+
+`send_email()` returns before any SMTP work when the submission's address equals `SMOKE_TEST_EMAIL`
+(checked first, so it also applies when `EMAIL_HOST_PASSWORD` is set). `announce_smoke_email` puts that
+address in an `X-Smoke-Test-Email` header on every response, and `smoke/site_smoke.py` posts the form
+only after it sees the header. **The pair is a safety interlock: if you change either half, keep the
+other.** Removing the skip while the header is still sent would make the smoke test email the owner
+every 15 minutes; the header is what stops it when the setting is simply not deployed. The tests in
+`SmokeTestEmailTestCase` and `test_smoke.py` hold both.
+
+The smoke test also runs from the image in docker-apps (stdlib only, no pip) and from
+`smoke-public.yml`, so `smoke/site_smoke.py` must stay standard library only. `smoke/*` is in the
+image-input filter in `ci.yml` and `release.yml` (kept identical): a script change builds a new image.
+A missing CSRF token is a 400 from Flask-WTF, not the 403 the app's own handler returns.
 
 ### OTel is unconditional
 
